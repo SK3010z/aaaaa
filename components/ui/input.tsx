@@ -29,7 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className="flex flex-col gap-4">
         {label && (
           <label
-            className="text-neutral-900 text-base leading-none"
+            className="text-neutral-900 text-base leading-none w-fit"
             htmlFor={id}
           >
             {label}
@@ -71,7 +71,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <span>{error}</span>}
+        {error && (
+          <span className="text-sm leading-none text-red-500">{error}</span>
+        )}
       </div>
     )
   },
