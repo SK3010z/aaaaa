@@ -22,7 +22,7 @@ export default function Header() {
         <div className="h-8 w-px bg-neutral-200" />
 
         <div className="flex items-center gap-4">
-          <SelectLocation /> 
+          <SelectLocation />
         </div>
       </div>
     </header>
