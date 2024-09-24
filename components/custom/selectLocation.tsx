@@ -1,5 +1,10 @@
+'use client'
+import { useApi } from '@/core/hooks/useApi'
+import { ListPanelResponse } from '@/core/models/httpResponses/listPanelResponse'
 import { getFirstAndSecondName } from '@/core/utils/getFirstAndSecondName'
 import { getInitials } from '@/core/utils/getInitials'
+import { usePanelStore } from '@/stores/panelStore'
+import { useQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
@@ -19,6 +24,32 @@ export function SelectLocation() {
   const { data } = useSession()
   const [popoverOpen, setPopoverOpen] = useState(false)
   const session = useSession()
+  const { api } = useApi()
+  const [storedPanels, selectedPanel, setSelectedPanel, setPanels] =
+    usePanelStore((state) => [
+      state.panels,
+      state.selectedPanel,
+      state.actions.setSelectedPanel,
+      state.actions.setPanels,
+    ])
+
+  async function fetchPanels() {
+    const result = await api.get<ListPanelResponse>('panel')
+    setPanels(result.data)
+    return result.data
+  }
+
+  const { data: panels } = useQuery({
+    queryFn: fetchPanels,
+    queryKey: ['@4senhas-panels-list'],
+  })
+
+  function onPanelChange(panelId: string) {
+    const panel = storedPanels.find((panel) => panel.id === panelId)
+    if (panel) {
+      setSelectedPanel(panel)
+    }
+  }
 
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -59,14 +90,16 @@ export function SelectLocation() {
         </div>
         <div className="p-4">
           <span className="text-sm font-medium">Painel</span>
-          <Select>
+          <Select value={selectedPanel?.id} onValueChange={onPanelChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Selecinar" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Painel 1</SelectItem>
-              <SelectItem value="dark">Painel 2</SelectItem>
-              <SelectItem value="system">Painel 3</SelectItem>
+              {panels?.map((panel, index) => (
+                <SelectItem key={panel.id} value={panel.id}>
+                  {panel.description || `Painel ${index + 1}`}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
