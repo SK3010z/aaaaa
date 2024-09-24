@@ -1,3 +1,4 @@
+import { CallTable } from '@/components/custom/callTable'
 import { HomeCards } from '@/components/custom/homeCards'
 
 export default function ListaDeChamadasPage() {
@@ -7,6 +8,7 @@ export default function ListaDeChamadasPage() {
         Painel de chamadas
       </h1>
       <HomeCards />
+      <CallTable />
     </div>
   )
 }
