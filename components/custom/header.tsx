@@ -2,6 +2,7 @@
 import { Bell, Settings } from 'lucide-react'
 import { Button } from '../ui/button'
 import { BreadCrumbs } from './breadCrumbs'
+import { SelectLocation } from './selectLocation'
 
 export default function Header() {
   return (
@@ -21,10 +22,7 @@ export default function Header() {
         <div className="h-8 w-px bg-neutral-200" />
 
         <div className="flex items-center gap-4">
-          <div className="size-10 text-white font-medium flex items-center justify-center rounded-full bg-orange-700">
-            FT
-          </div>
-          <span className="text-sm font-medium">Fulano de tal</span>
+          <SelectLocation /> 
         </div>
       </div>
     </header>
