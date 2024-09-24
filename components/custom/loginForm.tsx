@@ -6,10 +6,10 @@ import {
 } from '@/core/models/validationSchemas/loginRequestData'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { Button } from '../ui/button'
@@ -18,7 +18,6 @@ import { Input } from '../ui/input'
 import { Spinner } from '../ui/spinner'
 
 export function LoginForm() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const {
     handleSubmit,
@@ -27,6 +26,8 @@ export function LoginForm() {
   } = useForm<LoginRequestData>({
     resolver: zodResolver(loginRequestDataResolver),
   })
+  const session = useSession()
+  const { replace } = useRouter()
 
   async function onSubmit(data: LoginRequestData) {
     try {
@@ -43,7 +44,7 @@ export function LoginForm() {
       }
 
       toast.success('Login realizado com sucesso!')
-      router.push(`/lista-de-chamadas`)
+      // router.push(`/lista-de-chamadas`)
     } catch (error) {
       console.log('==> ERROR', error)
 
@@ -64,6 +65,12 @@ export function LoginForm() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (session.status === 'authenticated' && session.data.user?.callBackUrl) {
+      replace(session.data?.user?.callBackUrl)
+    }
+  }, [replace, session.data, session.status])
 
   return (
     <form

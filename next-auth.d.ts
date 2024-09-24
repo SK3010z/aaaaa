@@ -1,4 +1,5 @@
 import 'next-auth'
+import { SessionData } from './core/models/model/sessionData'
 
 declare module 'next-auth' {
   /**
@@ -6,10 +7,6 @@ declare module 'next-auth' {
    */
 
   interface Session {
-    user: {
-      person_name: string
-      token: string
-      username: string
-    }
+    user: SessionData
   }
 }

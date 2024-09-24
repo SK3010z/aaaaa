@@ -1,3 +1,4 @@
+'use client'
 import logo from '@/assets/svg/logo-colored-text-white.svg'
 import {
   Bell,
@@ -8,10 +9,17 @@ import {
   Monitor,
   Settings,
 } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 export function NavBar() {
+  const { replace } = useRouter()
+  async function handleSignOut() {
+    await signOut({ redirect: false })
+    replace('/')
+  }
   return (
     <nav className="w-[17.5rem] bg-gradient-to-b from-[#242424] to-[#191919] text-neutral-50 shadow-md">
       <div className="p-6">
@@ -108,8 +116,9 @@ export function NavBar() {
               variant="ghost"
               className="rounded-sm w-full flex justify-start gap-4"
               asChild
+              onClick={handleSignOut}
             >
-              <Link href="/">
+              <Link href="#">
                 <LogOut className="size-4" />
                 <span>Sair</span>
               </Link>

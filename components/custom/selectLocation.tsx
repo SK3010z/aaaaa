@@ -18,13 +18,15 @@ import { CloseButton } from './closeButton'
 export function SelectLocation() {
   const { data } = useSession()
   const [popoverOpen, setPopoverOpen] = useState(false)
+  const session = useSession()
+
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger className="group">
         <div className="flex items-center gap-4 pr-2">
           <div className="relative flex items-center">
             <div className="size-10 text-white font-medium flex items-center justify-center rounded-full bg-orange-700">
-              {getInitials(data?.user?.person_name).toUpperCase()}
+              {getInitials(data?.user.name).toUpperCase()}
             </div>
             <span className="absolute bottom-0 right-0 top-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
           </div>
@@ -32,12 +34,13 @@ export function SelectLocation() {
           <div className="flex flex-col text-left">
             <div>
               <span className="text-sm font-medium">
-                {getFirstAndSecondName(data?.user?.person_name)}
+                {getFirstAndSecondName(data?.user.name)}
               </span>
             </div>
             <div>
               <span className="text-sm font-medium text-neutral-500">
-                Unidade 2 - Consultorio 1
+                {session.data?.user.selectedServiceLocation?.name} - Consultorio
+                1
               </span>
             </div>
           </div>
