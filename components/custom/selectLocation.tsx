@@ -103,7 +103,7 @@ export function SelectLocation() {
         <div className="flex gap-3 justify-end p-4">
           <Button
             size={'sm'}
-            className="bg-secondary text-primary border hover:bg-neutral-200"
+            className="bg-neutral-200 text-primary border hover:bg-neutral-300"
             onClick={() => setPopoverOpen(!popoverOpen)}
           >
             Cancelar
