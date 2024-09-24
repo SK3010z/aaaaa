@@ -1,4 +1,4 @@
-import { ChevronDown, X } from 'lucide-react'
+import { ChevronDown, ChevronUp, X } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -35,7 +35,7 @@ export function SelectLocation() {
             </div>
           </div>
           <span className="text-sm font-medium">
-            <ChevronDown size={14} className="text-neutral-500" />
+            {popoverOpen ?  <ChevronUp size={14} className="text-neutral-500" />  :<ChevronDown size={14} className="text-neutral-500" />}
           </span>
         </div>
       </PopoverTrigger>
