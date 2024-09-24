@@ -71,7 +71,7 @@ export function NavBar() {
               className="rounded-sm w-full flex justify-start gap-4"
               asChild
             >
-              <Link href="/">
+              <Link href="/lista-de-painel-e-totem">
                 <LayoutList className="size-4" />
                 <span>Parametrizador</span>
               </Link>
