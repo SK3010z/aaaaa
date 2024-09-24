@@ -35,7 +35,11 @@ export function SelectLocation() {
             </div>
           </div>
           <span className="text-sm font-medium">
-            {popoverOpen ?  <ChevronUp size={14} className="text-neutral-500" />  :<ChevronDown size={14} className="text-neutral-500" />}
+            {popoverOpen ? (
+              <ChevronUp size={14} className="text-neutral-500" />
+            ) : (
+              <ChevronDown size={14} className="text-neutral-500" />
+            )}
           </span>
         </div>
       </PopoverTrigger>
