@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        'table-head': 'hsl(var(--table-head))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         'screen-background': 'hsl(var(--screen-background))',
