@@ -1,3 +1,4 @@
+'use client'
 import {
   Megaphone,
   Plus,
@@ -5,11 +6,15 @@ import {
   Search,
   SlidersHorizontal,
 } from 'lucide-react'
+import { toast } from 'react-toastify'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
 export function CallTableFilters() {
+  function handleCallNextPassword() {
+    toast.info(<span className="font-medium">Chamando senha Serviço-0001</span>)
+  }
   return (
     <div className="flex items-center justify-between p-6">
       <div className="relative flex items-center">
@@ -46,7 +51,7 @@ export function CallTableFilters() {
           <Plus />
           <span>Nova senha</span>
         </Button>
-        <Button>
+        <Button onClick={handleCallNextPassword}>
           <Megaphone />
           <span>Chamar próxima senha</span>
         </Button>

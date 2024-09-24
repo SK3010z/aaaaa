@@ -1,4 +1,7 @@
-import { ChevronDown, ChevronUp, X } from 'lucide-react'
+import { getFirstAndSecondName } from '@/core/utils/getFirstAndSecondName'
+import { getInitials } from '@/core/utils/getInitials'
+import { ChevronDown } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -10,23 +13,27 @@ import {
   SelectValue,
 } from '../ui/select'
 import { Separator } from '../ui/separator'
+import { CloseButton } from './closeButton'
 
 export function SelectLocation() {
+  const { data } = useSession()
   const [popoverOpen, setPopoverOpen] = useState(false)
   return (
-    <Popover open={popoverOpen}>
-      <PopoverTrigger onClick={() => setPopoverOpen(!popoverOpen)}>
-        <div className="flex items-center gap-4">
+    <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+      <PopoverTrigger className="group">
+        <div className="flex items-center gap-4 pr-2">
           <div className="relative flex items-center">
             <div className="size-10 text-white font-medium flex items-center justify-center rounded-full bg-orange-700">
-              FT
+              {getInitials(data?.user?.person_name).toUpperCase()}
             </div>
             <span className="absolute bottom-0 right-0 top-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
           </div>
 
           <div className="flex flex-col text-left">
             <div>
-              <span className="text-sm font-medium">Fulano de tal</span>
+              <span className="text-sm font-medium">
+                {getFirstAndSecondName(data?.user?.person_name)}
+              </span>
             </div>
             <div>
               <span className="text-sm font-medium text-neutral-500">
@@ -34,27 +41,15 @@ export function SelectLocation() {
               </span>
             </div>
           </div>
-          <span className="text-sm font-medium">
-            {popoverOpen ? (
-              <ChevronUp size={14} className="text-neutral-500" />
-            ) : (
-              <ChevronDown size={14} className="text-neutral-500" />
-            )}
-          </span>
+          <ChevronDown className="text-neutral-500 size-4 group-data-[state=open]:rotate-180 transition-transform" />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0 mr-2" sideOffset={8}>
         <div className="p-4 flex justify-between">
           <div>
             <span className="text-sm font-medium">Local de atendimento</span>
           </div>
-          <div className="cursor-pointer">
-            <X
-              onClick={() => setPopoverOpen(!popoverOpen)}
-              size={15}
-              className="text-gray-300"
-            />
-          </div>
+          <CloseButton onClick={() => setPopoverOpen(false)} />
         </div>
         <div>
           <Separator />
@@ -103,7 +98,7 @@ export function SelectLocation() {
         <div className="flex gap-3 justify-end p-4">
           <Button
             size={'sm'}
-            className="bg-neutral-200 text-primary border hover:bg-neutral-300"
+            className="bg-neutral-50 text-primary border hover:bg-neutral-100"
             onClick={() => setPopoverOpen(!popoverOpen)}
           >
             Cancelar

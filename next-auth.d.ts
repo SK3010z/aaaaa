@@ -1,4 +1,3 @@
-import { LoginResponse } from '@/core/httpResponses/loginResponse'
 import 'next-auth'
 
 declare module 'next-auth' {
@@ -7,7 +6,8 @@ declare module 'next-auth' {
    */
 
   interface Session {
-    user: LoginResponse & {
+    user: {
+      person_name: string
       token: string
       username: string
     }
