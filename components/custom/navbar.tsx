@@ -53,7 +53,7 @@ export function NavBar() {
             >
               <Link href="/">
                 <Monitor className="size-4" />
-                <span>Painel de atendimento</span>
+                <span>Painel</span>
               </Link>
             </Button>
           </li>
