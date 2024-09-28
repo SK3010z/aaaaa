@@ -9,7 +9,7 @@ export default function ListaDePainelETotemPage() {
           A partir desta sessão é permitido cadastrar e editar o Totem / Painel
           de atendimento
         </span>
-      </div>
+      </div> 
       <PanelAndTotemTable />
     </div>
   )
