@@ -1,9 +1,10 @@
 'use client'
-import { Megaphone, RefreshCcw, Search, SlidersHorizontal } from 'lucide-react'
+import { Megaphone, RefreshCcw, Search } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { CallFiltersForm } from './callFiltersForm'
 import { NewPasswordDialog } from './newPasswordDialog'
 
 export function CallTableFilters() {
@@ -32,12 +33,12 @@ export function CallTableFilters() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" className="size-9 p-0">
-              <SlidersHorizontal />
+            <Button variant="ghost" className="size-9 p-0"> 
+               <CallFiltersForm />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <span>Filtrar</span>
+            <span>Filtrar</span> 
           </TooltipContent>
         </Tooltip>
 

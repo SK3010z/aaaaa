@@ -2,6 +2,7 @@
 import { useQueueManager } from '@/contexts/queueManagerContext'
 import { ReceptionQueuePassword } from '@/core/models/model/receptionQueuePassword'
 import { formatTimeMask } from '@/core/utils/formatTimeMask'
+import { useCallFiltersStore } from '@/stores/callFiltersStore'
 import { useQueueStore } from '@/stores/queueStore'
 import { produce } from 'immer'
 import {
@@ -13,7 +14,7 @@ import {
   Trash,
   User,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from '../ui/button'
 import {
   DropdownMenu,
@@ -44,6 +45,31 @@ export function CallTable() {
     state.passwords,
     state.actions.setPasswords,
   ])
+  
+  const [selectedService] = useCallFiltersStore(
+    (state) => [state.selectedService],
+  )
+ 
+  const filteredPasswords = useMemo(() => {
+    if (!passwords) return null
+
+    const pwds = (selectedService.length === 0) ? passwords : passwords.filter(password => selectedService.some(service => service.value === password.passwordId))
+     
+    const sortedPwds = pwds.sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    })
+
+    const superPriorityPwds = sortedPwds.filter(currentPassword => currentPassword?.superPriority).sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    })
+
+    const priorityPwds = sortedPwds.filter(currentPassword => currentPassword?.priority === true).sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    })
+
+    return [...superPriorityPwds, ...priorityPwds, ...sortedPwds.filter(pwd => !pwd?.superPriority && !pwd?.priority)]
+  }, [selectedService, passwords])
+
 
   function onPasswordChange(
     field: keyof ReceptionQueuePassword,
@@ -64,9 +90,7 @@ export function CallTable() {
   ) {
     const obj = { [field]: value, id }
     updatePassword(obj)
-  }
-
-  console.log('=> ', passwords)
+  } 
 
   return (
     <div className="px-8 pb-6 flex flex-col flex-1">
@@ -86,7 +110,7 @@ export function CallTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {passwords.map((password, index) => (
+              {filteredPasswords?.map((password, index) => (
                 <TableRow key={password.id}>
                   <TableCell>
                     <DropdownMenu modal>
