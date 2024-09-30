@@ -25,13 +25,25 @@ export function SelectLocation() {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const session = useSession()
   const { api } = useApi()
-  const [storedPanels, selectedPanel, setSelectedPanel, setPanels] =
-    usePanelStore((state) => [
-      state.panels,
-      state.selectedPanel,
-      state.actions.setSelectedPanel,
-      state.actions.setPanels,
-    ])
+  const [
+    storedPanels,
+    selectedPanel,
+    selectedLocal,
+    selectedPosition,
+    setSelectedPanel,
+    setPanels,
+    setSelectedLocal,
+    setSelectedPosition,
+  ] = usePanelStore((state) => [
+    state.panels,
+    state.selectedPanel,
+    state.selectedLocal,
+    state.selectedPosition,
+    state.actions.setSelectedPanel,
+    state.actions.setPanels,
+    state.actions.setSelectedLocal,
+    state.actions.setSelectedPosition,
+  ])
 
   async function fetchPanels() {
     const result = await api.get<ListPanelResponse>('panel')
@@ -70,8 +82,8 @@ export function SelectLocation() {
             </div>
             <div>
               <span className="text-sm font-medium text-neutral-500">
-                {session.data?.user.selectedServiceLocation?.name} - Consultorio
-                1
+                {session.data?.user.selectedServiceLocation?.name} -{' '}
+                {selectedLocal} {selectedPosition}
               </span>
             </div>
           </div>
@@ -106,27 +118,30 @@ export function SelectLocation() {
         <div className="flex gap-4 p-4">
           <div className="flex-col">
             <span className="text-sm font-medium">Local</span>
-            <Select>
+            <Select value={selectedLocal} onValueChange={setSelectedLocal}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecinar" />
+                <SelectValue placeholder="Selecionar" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Consultorio</SelectItem>
-                <SelectItem value="dark">Guiche</SelectItem>
-                <SelectItem value="system">Sala de Exames</SelectItem>
+                <SelectItem value="Consultorio">Consultorio</SelectItem>
+                <SelectItem value="Guiche">Guiche</SelectItem>
+                <SelectItem value="Sala">Sala</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex-col">
-            <span className="text-sm font-medium">Número</span>
-            <Select>
+            <span className="text-sm font-medium">Posição</span>
+            <Select
+              value={selectedPosition}
+              onValueChange={setSelectedPosition}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Selecinar" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">1</SelectItem>
-                <SelectItem value="dark">2</SelectItem>
-                <SelectItem value="system">3</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
               </SelectContent>
             </Select>
           </div>

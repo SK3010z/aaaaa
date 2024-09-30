@@ -1,3 +1,5 @@
+'use client'
+import { useQueueStore } from '@/stores/queueStore'
 import { cva } from 'class-variance-authority'
 import { Check, ListChecks, ListOrdered } from 'lucide-react'
 
@@ -35,6 +37,7 @@ const titleBaseStyle = cva('text-[2rem] leading-none font-medium')
 const descriptionBaseStyle = cva('text-base leading-none font-medium')
 
 export function HomeCards() {
+  const [passwords] = useQueueStore((state) => [state.passwords])
   return (
     <ul className="grid grid-cols-3 gap-5 py-6 px-8">
       <li
@@ -75,7 +78,7 @@ export function HomeCards() {
           <h4 className={descriptionBaseStyle()}>
             Total de senhas ainda na fila hoje
           </h4>
-          <h2 className={titleBaseStyle()}>102 </h2>
+          <h2 className={titleBaseStyle()}>{passwords.length}</h2>
         </div>
       </li>
     </ul>
