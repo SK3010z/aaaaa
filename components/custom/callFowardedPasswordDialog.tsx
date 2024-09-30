@@ -1,4 +1,5 @@
 import { useQueueManager } from '@/contexts/queueManagerContext'
+import { usePanelStore } from '@/stores/panelStore'
 import { useQueueStore } from '@/stores/queueStore'
 import { Info } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -11,13 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
+import { CreatableSelect } from './creatableSelect'
+
+type Option = {
+  label: string
+  value: string
+}
 
 type Props = {
   passwordId: string
@@ -30,23 +30,32 @@ export function CallFowardedPasswordDialog({
   onOpenChange,
   open,
 }: Props) {
-  const [position, setPosition] = useState('')
-  const [local, setLocal] = useState('')
+  const [position, setPosition] = useState<Option | null>(null)
+  const [local, setLocal] = useState<Option | null>(null)
   const { callPassword } = useQueueManager()
   const [passwords] = useQueueStore((state) => [state.passwords])
+  const [locals, positions, addLocal, addPosition] = usePanelStore((state) => [
+    state.locals,
+    state.positions,
+    state.actions.addLocal,
+    state.actions.addPosition,
+  ])
   const password = useMemo(
     () => passwords.find((pass) => pass.id === passwordId),
     [passwordId, passwords],
   )
 
   function handleCall() {
-    callPassword(passwordId, true, { deskCaller: local, location: position })
+    callPassword(passwordId, true, {
+      deskCaller: local?.value || '',
+      location: position?.value || '',
+    })
   }
 
   function handleOpenChange(open: boolean) {
     if (!open) {
-      setLocal('')
-      setPosition('')
+      setLocal(null)
+      setPosition(null)
     }
     onOpenChange(open)
   }
@@ -58,9 +67,14 @@ export function CallFowardedPasswordDialog({
   }, [onOpenChange, password, passwordId])
 
   useEffect(() => {
-    setLocal(password?.deskCaller || '')
-    setPosition(password?.location || '')
-  }, [password])
+    setLocal(
+      locals.find((local) => local.value === password?.deskCaller) || null,
+    )
+    setPosition(
+      positions.find((position) => position.value === password?.location) ||
+        null,
+    )
+  }, [locals, password, positions])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -86,31 +100,31 @@ export function CallFowardedPasswordDialog({
             </span>
           </div>
 
-          <div className="flex items-center gap-4 w-full">
-            <div className="w-full">
-              <span>Local</span>
-              <Select value={local} onValueChange={setLocal}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Guichê">Guichê</SelectItem>
-                  <SelectItem value="Sala">Sala</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="flex-col w-full">
+              <CreatableSelect
+                label="Local"
+                value={local}
+                onChange={setLocal}
+                tabIndex={-1}
+                options={locals}
+                onCreateOption={(option) =>
+                  addLocal({ label: option, value: option })
+                }
+              />
             </div>
-
-            <div className="w-full">
-              <span>Posição</span>
-              <Select value={position} onValueChange={setPosition}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="01">01</SelectItem>
-                  <SelectItem value="02">02</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col w-full">
+              <CreatableSelect
+                label="Posição"
+                value={position}
+                onChange={setPosition}
+                tabIndex={-1}
+                createOptionPosition="first"
+                options={positions}
+                onCreateOption={(option) =>
+                  addPosition({ label: option, value: option })
+                }
+              />
             </div>
           </div>
         </div>

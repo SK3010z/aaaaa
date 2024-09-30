@@ -1,4 +1,5 @@
 import { useQueueManager } from '@/contexts/queueManagerContext'
+import { usePanelStore } from '@/stores/panelStore'
 import { Forward, Info } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -12,34 +13,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
+import { CreatableSelect } from './creatableSelect'
 
 type Props = {
   passwordId: string
 }
 
+type Option = {
+  label: string
+  value: string
+}
+
 export function FowardPasswordDialog({ passwordId }: Props) {
-  const [position, setPosition] = useState('')
-  const [local, setLocal] = useState('')
+  const [position, setPosition] = useState<Option | null>()
+  const [local, setLocal] = useState<Option | null>()
   const { updatePassword } = useQueueManager()
   const [open, setOpen] = useState(false)
+  const [locals, positions, addLocal, addPosition] = usePanelStore((store) => [
+    store.locals,
+    store.positions,
+    store.actions.addLocal,
+    store.actions.addPosition,
+  ])
 
   function handleFoward() {
     if (!open) {
-      setLocal('')
-      setPosition('')
+      setLocal(null)
+      setPosition(null)
     }
 
     updatePassword({
       id: passwordId,
-      deskCaller: local,
-      location: position,
+      deskCaller: local?.value,
+      location: position?.value,
       fowarded: true,
     })
     setOpen(false)
@@ -49,8 +55,8 @@ export function FowardPasswordDialog({ passwordId }: Props) {
   function handleOpenChange(open: boolean) {
     setOpen(open)
     if (!open) {
-      setLocal('')
-      setPosition('')
+      setLocal(null)
+      setPosition(null)
     }
   }
 
@@ -79,31 +85,31 @@ export function FowardPasswordDialog({ passwordId }: Props) {
             </span>
           </div>
 
-          <div className="flex items-center gap-4 w-full">
-            <div className="w-full">
-              <span>Local</span>
-              <Select value={local} onValueChange={setLocal}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Guichê">Guichê</SelectItem>
-                  <SelectItem value="Sala">Sala</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="flex-col w-full">
+              <CreatableSelect
+                label="Local"
+                value={local}
+                onChange={setLocal}
+                tabIndex={-1}
+                options={locals}
+                onCreateOption={(option) =>
+                  addLocal({ label: option, value: option })
+                }
+              />
             </div>
-
-            <div className="w-full">
-              <span>Posição</span>
-              <Select value={position} onValueChange={setPosition}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="01">01</SelectItem>
-                  <SelectItem value="02">02</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col w-full">
+              <CreatableSelect
+                label="Posição"
+                value={position}
+                onChange={setPosition}
+                tabIndex={-1}
+                createOptionPosition="first"
+                options={positions}
+                onCreateOption={(option) =>
+                  addPosition({ label: option, value: option })
+                }
+              />
             </div>
           </div>
         </div>

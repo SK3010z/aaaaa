@@ -94,8 +94,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     if (
       fowarded &&
       !location &&
-      (password?.deskCaller !== selectedLocal ||
-        password?.location !== selectedPosition)
+      (password?.deskCaller !== selectedLocal?.value ||
+        password?.location !== selectedPosition?.value)
     ) {
       return setCallPasswordId(passwordId)
     }
@@ -107,10 +107,11 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
       location: {
         deskCaller: location?.deskCaller || selectedLocal,
         location: location?.location || selectedPosition,
-        panelsToCall: selectedPanel ? [selectedPanel?.id] : [],
+        panelsToCall: selectedPanel ? [selectedPanel?.value] : [],
       },
     })
     toast.info(`Chamando senha: ${password?.password}`)
+    setCallPasswordId('')
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
