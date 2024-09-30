@@ -16,4 +16,6 @@ export interface ServicePassword {
   observation?: string
   serviceClassificationId?: string
   showInTotem?: boolean
+  deskCaller?: string
+  location?: string
 }

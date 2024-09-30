@@ -1,7 +1,7 @@
 import { useQueueManager } from '@/contexts/queueManagerContext'
-import { Forward, Info } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useQueueStore } from '@/stores/queueStore'
+import { Info } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -10,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '../ui/dialog'
 import {
   Select,
@@ -22,60 +21,68 @@ import {
 
 type Props = {
   passwordId: string
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
-export function FowardPasswordDialog({ passwordId }: Props) {
+export function CallFowardedPasswordDialog({
+  passwordId,
+  onOpenChange,
+  open,
+}: Props) {
   const [position, setPosition] = useState('')
   const [local, setLocal] = useState('')
-  const { updatePassword } = useQueueManager()
-  const [open, setOpen] = useState(false)
+  const { callPassword } = useQueueManager()
+  const [passwords] = useQueueStore((state) => [state.passwords])
+  const password = useMemo(
+    () => passwords.find((pass) => pass.id === passwordId),
+    [passwordId, passwords],
+  )
 
-  function handleFoward() {
-    if (!open) {
-      setLocal('')
-      setPosition('')
-    }
-
-    updatePassword({
-      id: passwordId,
-      deskCaller: local,
-      location: position,
-      fowarded: true,
-    })
-    setOpen(false)
-    toast.success('Senha encaminhada')
+  function handleCall() {
+    callPassword(passwordId, true, { deskCaller: local, location: position })
   }
 
   function handleOpenChange(open: boolean) {
-    setOpen(open)
     if (!open) {
       setLocal('')
       setPosition('')
     }
+    onOpenChange(open)
   }
+
+  useEffect(() => {
+    if (!password && passwordId) {
+      onOpenChange(false)
+    }
+  }, [onOpenChange, password, passwordId])
+
+  useEffect(() => {
+    setLocal(password?.deskCaller || '')
+    setPosition(password?.location || '')
+  }, [password])
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
-          variant="custom"
-        >
-          <Forward className="mr-2 !size-4" />
-          Encaminhar
-        </Button>
-      </DialogTrigger>
       <DialogContent className="w-2/5 p-0">
         <DialogHeader className="border-b p-6">
-          <DialogTitle>Encaminhar</DialogTitle>
+          <DialogTitle>
+            Chamar senha -{' '}
+            <span className="bg-primary/10 rounded py-1 px-4 text-primary">
+              {password?.password}
+            </span>
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col p-6">
-          <div className="bg-primary/10 text-primary flex items-center gap-2 rounded-md px-4 py-3 mb-6">
-            <Info />
+          <div className="bg-blue-600/10 text-blue-600 flex items-center gap-2 rounded-md px-4 py-3 mb-6">
+            <div className="bloc">
+              <Info />
+            </div>
             <span className="text-sm">
-              <strong className="font-medium">ATENÇÃO:</strong> Ao encaminhar
-              uma pessoa, ela será automaticamente removida da sua lista.
+              <strong className="font-medium">ATENÇÃO:</strong> Esta senha foi
+              encaminhada para uma posição de trabalho diferente da sua posição
+              atual, é necessário selecionar para onde a senha deve ser chamada
             </span>
           </div>
 
@@ -111,8 +118,8 @@ export function FowardPasswordDialog({ passwordId }: Props) {
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
-          <Button onClick={handleFoward} disabled={!position || !local}>
-            Confirmar
+          <Button onClick={handleCall} disabled={!position || !local}>
+            Chamar
           </Button>
         </DialogFooter>
       </DialogContent>
