@@ -20,17 +20,19 @@ import {
 } from '../ui/table'
 import { PanelAndTotemTableFilters } from './panelAndTotemTableFilters'
 
-export const PanelAndTotemTable: React.FC = () => { 
-  const {  panels, handleActivePannel } = usePanelAndTotem();
+export const PanelAndTotemTable: React.FC = () => {
+  const { panels, handleActivePannel } = usePanelAndTotem()
   const { replace } = useRouter()
-  function layoutName(layout:string){ 
-      const mapper = {
-        'withMediaNextCalls': 'Com mídia - Próximas chamadas',
-        'withMedia': 'Com mídia',
-      } as any 
-      return mapper[layout] || 'Padrão'; 
-  } 
- 
+  function layoutName(layout: string) {
+    const mapper = {
+      withMediaNextCalls: 'Com mídia - Próximas chamadas',
+      withMedia: 'Com mídia',
+    } as {
+      [key: string]: string
+    }
+    return mapper[layout] || 'Padrão'
+  }
+
   return (
     <div className="px-8 pb-6 flex flex-col flex-1 py-6">
       <div className="bg-white border rounded flex-col flex-1">
@@ -59,7 +61,9 @@ export const PanelAndTotemTable: React.FC = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
-                          onClick={() => replace(`/edit-painel-e-totem/${item.id}`)}
+                          onClick={() =>
+                            replace(`/edit-painel-e-totem/${item.id}`)
+                          }
                         >
                           <div className="flex gap-2 py-1">
                             <Pencil />
@@ -72,7 +76,7 @@ export const PanelAndTotemTable: React.FC = () => {
                   <TableCell>{item.description}</TableCell>
                   <TableCell>
                     <div className="flex items-center justify-center">
-                       {item.name}
+                      {item.name}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -87,7 +91,10 @@ export const PanelAndTotemTable: React.FC = () => {
                       className="data-[state=checked]:bg-primary/10 data-[state=checked]:border-primary/40"
                       thumbClassName="data-[state=checked]:bg-primary data-[state=unchecked]:bg-neutral-500"
                       onClick={(e) => {
-                        handleActivePannel(item.id, !(e.currentTarget.dataset.state === 'checked'))
+                        handleActivePannel(
+                          item.id,
+                          !(e.currentTarget.dataset.state === 'checked'),
+                        )
                       }}
                     />
                   </TableCell>

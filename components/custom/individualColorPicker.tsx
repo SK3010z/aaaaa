@@ -4,7 +4,7 @@ import { Check } from 'lucide-react'
 interface Props {
   isChecked: boolean
   onClick: () => void
-  pickerColorClassName: string 
+  pickerColorClassName: string
 }
 
 export function IndividualColorPicker({

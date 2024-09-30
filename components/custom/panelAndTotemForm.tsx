@@ -7,44 +7,40 @@ import { ClassificationsTable } from './classificationsTable'
 import { EditPanelForm } from './editPanelForm'
 import { ServicesTable } from './servicesTable'
 
-export const PanelAndTotemForm: React.FC = (data) => {
-  const { panel } = usePanelAndTotem();  
- 
+export const PanelAndTotemForm: React.FC = () => {
+  const { panel } = usePanelAndTotem()
+
   return (
     <div className="px-8 pb-6 flex flex-col flex-1 py-6">
       <div className="bg-white border rounded flex-col flex-1 max-h-[80vh] overflow-y-auto">
-          <EditPanelForm panel={panel} /> 
-         
-          <div>
-              <Separator />
-          </div> 
+        <EditPanelForm panel={panel} />
 
-          <div className="flex w-full">
-            <div className="flex w-full p-6 items-center justify-between">
-                <div>
-                    Classificações
-                </div> 
-                <AddClassificationForm />
-            </div>
+        <div>
+          <Separator />
+        </div>
+
+        <div className="flex w-full">
+          <div className="flex w-full p-6 items-center justify-between">
+            <div>Classificações</div>
+            <AddClassificationForm />
           </div>
+        </div>
 
-          <ClassificationsTable /> 
+        <ClassificationsTable />
 
-          <div className="flex w-full">
-            <div className="flex w-full p-6 items-center justify-between">
-                <div>
-                  Serviços
-                </div>
-                <AddServiceForm /> 
-            </div>
+        <div className="flex w-full">
+          <div className="flex w-full p-6 items-center justify-between">
+            <div>Serviços</div>
+            <AddServiceForm />
           </div>
+        </div>
 
-          <ServicesTable />
+        <ServicesTable />
 
-          <div>
-              <Separator />
-          </div>
+        <div>
+          <Separator />
+        </div>
       </div>
-      </div>
+    </div>
   )
 }
