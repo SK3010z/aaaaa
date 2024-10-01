@@ -1,13 +1,11 @@
 'use client'
 import logo from '@/assets/svg/logo-colored-text-white.svg'
 import {
-  Bell,
   LayoutGrid,
   LayoutList,
-  List,
   LogOut,
   Monitor,
-  Settings,
+  Smartphone,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
@@ -35,36 +33,39 @@ export function NavBar() {
               className="rounded-sm w-full flex justify-start gap-4"
               asChild
             >
-              <Link href="/">
+              <Link href="/lista-de-chamadas">
                 <LayoutGrid className="size-4" />
                 <span>Início</span>
               </Link>
             </Button>
           </li>
+
           <li>
             <Button
               variant="ghost"
               className="rounded-sm w-full flex justify-start gap-4"
               asChild
             >
-              <Link href="/">
-                <List className="size-4" />
-                <span>Painel de chamadas</span>
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button
-              variant="ghost"
-              className="rounded-sm w-full flex justify-start gap-4"
-              asChild
-            >
-              <Link href="/">
+              <Link href="https://painel.saudehd.com.br" target="_blank">
                 <Monitor className="size-4" />
                 <span>Painel</span>
               </Link>
             </Button>
           </li>
+
+          <li>
+            <Button
+              variant="ghost"
+              className="rounded-sm w-full flex justify-start gap-4"
+              asChild
+            >
+              <Link href="https://totem.saudehd.com.br" target="_blank">
+                <Smartphone className="size-4" />
+                <span>TOTEM</span>
+              </Link>
+            </Button>
+          </li>
+
           <li>
             <Button
               variant="ghost"
@@ -87,7 +88,7 @@ export function NavBar() {
       <section className="p-6">
         <h2 className="mb-6 text-xs font-medium leading-none">Outros</h2>
         <ul className="flex flex-col gap-3">
-          <li>
+          {/* <li>
             <Button
               variant="ghost"
               className="rounded-sm w-full flex justify-start gap-4"
@@ -110,7 +111,7 @@ export function NavBar() {
                 <span>Configurações</span>
               </Link>
             </Button>
-          </li>
+          </li> */}
           <li>
             <Button
               variant="ghost"
