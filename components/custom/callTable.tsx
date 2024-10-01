@@ -51,7 +51,7 @@ export function CallTable() {
 
   const [selectedService, selectedPriority, selectedOrder] =
     useCallFiltersStore((state) => [
-      state.selectedService, 
+      state.selectedService,
       state.selectedPriority,
       state.selectedOrder,
     ])
@@ -159,7 +159,10 @@ export function CallTable() {
                 <TableRow key={password.id}>
                   <TableCell>
                     <DropdownMenu modal>
-                      <DropdownMenuTrigger asChild>
+                      <DropdownMenuTrigger
+                        asChild
+                        className=" data-[state=open]:text-primary"
+                      >
                         <Button variant="ghost" className="size-9 p-0">
                           <EllipsisVertical />
                         </Button>
@@ -305,7 +308,7 @@ export function CallTable() {
                       >
                         <CheckCircle className="mr-2 !size-4" />
                         Iniciar
-                      </Button> 
+                      </Button>
                       <FowardPasswordDialog passwordId={password.id} />
                     </div>
                   </TableCell>

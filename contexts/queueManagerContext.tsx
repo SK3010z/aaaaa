@@ -105,8 +105,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
       id: passwordId,
       customText: password?.customTextCall || '',
       location: {
-        deskCaller: location?.deskCaller || selectedLocal,
-        location: location?.location || selectedPosition,
+        deskCaller: location?.deskCaller || selectedLocal?.value,
+        location: location?.location || selectedPosition?.value,
         panelsToCall: selectedPanel ? [selectedPanel?.value] : [],
       },
     })
