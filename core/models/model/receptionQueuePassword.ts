@@ -9,4 +9,6 @@ export interface ReceptionQueuePassword {
   observation?: string
   fowarded?: boolean
   scheduledTime?: string
+  deskCaller?: string
+  location?: string
 }

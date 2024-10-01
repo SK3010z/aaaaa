@@ -1,6 +1,7 @@
 'use client'
+import { useQueueManager } from '@/contexts/queueManagerContext'
+import { useQueueStore } from '@/stores/queueStore'
 import { Megaphone, RefreshCcw, Search } from 'lucide-react'
-import { toast } from 'react-toastify'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
@@ -8,8 +9,13 @@ import { CallFiltersForm } from './callFiltersForm'
 import { NewPasswordDialog } from './newPasswordDialog'
 
 export function CallTableFilters() {
+  const { callPassword } = useQueueManager()
+  const [passwords] = useQueueStore((state) => [state.passwords])
   function handleCallNextPassword() {
-    toast.info(<span className="font-medium">Chamando senha Serviço-0001</span>)
+    const nextPassword = passwords[0]
+    if (nextPassword) {
+      callPassword(nextPassword.id, nextPassword.fowarded)
+    }
   }
 
   return (
@@ -45,7 +51,10 @@ export function CallTableFilters() {
         <div className="h-6 w-px bg-neutral-300" />
 
         <NewPasswordDialog />
-        <Button onClick={handleCallNextPassword}>
+        <Button
+          onClick={handleCallNextPassword}
+          disabled={passwords.length === 0}
+        >
           <Megaphone />
           <span>Chamar próxima senha</span>
         </Button>

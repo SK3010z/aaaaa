@@ -10,15 +10,9 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
 import { Separator } from '../ui/separator'
 import { CloseButton } from './closeButton'
+import { CreatableSelect } from './creatableSelect'
 
 export function SelectLocation() {
   const { data } = useSession()
@@ -30,19 +24,27 @@ export function SelectLocation() {
     selectedPanel,
     selectedLocal,
     selectedPosition,
+    locals,
+    positions,
     setSelectedPanel,
     setPanels,
     setSelectedLocal,
     setSelectedPosition,
+    addLocal,
+    addPosition,
   ] = usePanelStore((state) => [
     state.panels,
     state.selectedPanel,
     state.selectedLocal,
     state.selectedPosition,
+    state.locals,
+    state.positions,
     state.actions.setSelectedPanel,
     state.actions.setPanels,
     state.actions.setSelectedLocal,
     state.actions.setSelectedPosition,
+    state.actions.addLocal,
+    state.actions.addPosition,
   ])
 
   async function fetchPanels() {
@@ -51,22 +53,15 @@ export function SelectLocation() {
     return result.data
   }
 
-  const { data: panels } = useQuery({
+  useQuery({
     queryFn: fetchPanels,
     queryKey: ['@4senhas-panels-list'],
   })
 
-  function onPanelChange(panelId: string) {
-    const panel = storedPanels.find((panel) => panel.id === panelId)
-    if (panel) {
-      setSelectedPanel(panel)
-    }
-  }
-
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-      <PopoverTrigger className="group">
-        <div className="flex items-center gap-4 pr-2">
+      <PopoverTrigger className="group w-96">
+        <div className="flex items-center justify-between w-full gap-4 pr-2">
           <div className="relative flex items-center">
             <div className="size-10 text-white font-medium flex items-center justify-center rounded-full bg-orange-700">
               {getInitials(data?.user.name).toUpperCase()}
@@ -81,16 +76,18 @@ export function SelectLocation() {
               </span>
             </div>
             <div>
-              <span className="text-sm font-medium text-neutral-500">
+              <span className="text-sm font-medium text-neutral-500 truncate">
                 {session.data?.user.selectedServiceLocation?.name} -{' '}
-                {selectedLocal} {selectedPosition}
+                {selectedLocal?.value} {selectedPosition?.value}
               </span>
             </div>
           </div>
-          <ChevronDown className="text-neutral-500 size-4 group-data-[state=open]:rotate-180 transition-transform" />
+          <div className="block">
+            <ChevronDown className="text-neutral-500 size-4 group-data-[state=open]:rotate-180 transition-transform" />
+          </div>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 mr-2" sideOffset={8}>
+      <PopoverContent className="p-0 mr-2 w-96" sideOffset={8}>
         <div className="p-4 flex justify-between">
           <div>
             <span className="text-sm font-medium">Local de atendimento</span>
@@ -100,61 +97,57 @@ export function SelectLocation() {
         <div>
           <Separator />
         </div>
-        <div className="p-4">
-          <span className="text-sm font-medium">Painel</span>
-          <Select value={selectedPanel?.id} onValueChange={onPanelChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Selecinar" />
-            </SelectTrigger>
-            <SelectContent>
-              {panels?.map((panel, index) => (
-                <SelectItem key={panel.id} value={panel.id}>
-                  {panel.description || `Painel ${index + 1}`}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex p-4 w-full">
+          <CreatableSelect
+            label="Painel"
+            options={storedPanels?.map((panel) => ({
+              label: panel.description,
+              value: panel.id,
+            }))}
+            value={selectedPanel}
+            onChange={setSelectedPanel}
+            isSearchable={false}
+            tabIndex={-1}
+          />
         </div>
-        <div className="flex gap-4 p-4">
-          <div className="flex-col">
-            <span className="text-sm font-medium">Local</span>
-            <Select value={selectedLocal} onValueChange={setSelectedLocal}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecionar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Consultorio">Consultorio</SelectItem>
-                <SelectItem value="Guiche">Guiche</SelectItem>
-                <SelectItem value="Sala">Sala</SelectItem>
-              </SelectContent>
-            </Select>
+        <div className="grid grid-cols-2 gap-4 p-4 w-full">
+          <div className="flex-col w-full">
+            <CreatableSelect
+              label="Local"
+              value={selectedLocal}
+              onChange={setSelectedLocal}
+              tabIndex={-1}
+              options={locals}
+              onCreateOption={(option) =>
+                addLocal({ label: option, value: option })
+              }
+            />
           </div>
-          <div className="flex-col">
-            <span className="text-sm font-medium">Posição</span>
-            <Select
+          <div className="flex flex-col w-full">
+            <CreatableSelect
+              label="Posição"
               value={selectedPosition}
-              onValueChange={setSelectedPosition}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecinar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectContent>
-            </Select>
+              onChange={setSelectedPosition}
+              tabIndex={-1}
+              createOptionPosition="first"
+              options={positions}
+              onCreateOption={(option) =>
+                addPosition({ label: option, value: option })
+              }
+            />
           </div>
         </div>
         <div className="flex gap-3 justify-end p-4">
           <Button
-            size={'sm'}
+            size="sm"
             className="bg-neutral-50 text-primary border hover:bg-neutral-100"
             onClick={() => setPopoverOpen(!popoverOpen)}
           >
             Cancelar
           </Button>
-          <Button size={'sm'}>Confirmar</Button>
+          <Button onClick={() => setPopoverOpen(!popoverOpen)} size="sm">
+            Confirmar
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

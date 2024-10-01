@@ -13,20 +13,28 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from 'react'
 import { toast } from 'react-toastify'
 import { io as socket } from 'socket.io-client'
 
 export type QueueManagerContextData = {
-  callPassword: (passwordId: string, fowarded?: boolean) => void
+  callPassword: (
+    passwordId: string,
+    fowarded?: boolean,
+    location?: { deskCaller: string; location: string },
+  ) => void
   updatePassword: (data: Partial<ReceptionQueuePassword>) => void
   dismissPassword: (passwordId: string, reason: string) => void
   confirmPassword: (passwordId: string) => void
+  callPasswordId: string
+  setCallPasswordId: (callPasswordId: string) => void
 }
 
 const QueueManagerContext = createContext({} as QueueManagerContextData)
 
 export function QueueManagerProvider({ children }: PropsWithChildren) {
+  const [callPasswordId, setCallPasswordId] = useState('')
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
     state.actions.setPasswords,
@@ -70,28 +78,40 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     [],
   )
 
-  function callPassword(passwordId: string, fowarded?: boolean) {
+  function callPassword(
+    passwordId: string,
+    fowarded?: boolean,
+    location?: { deskCaller: string; location?: string },
+  ) {
     if (!selectedLocal) {
       return toast.warn('Selecione um local para chamar a senha')
     }
     if (!selectedPanel) {
       return toast.warn('Selecione um painel para chamar a senha')
     }
-    if (fowarded) {
-      return toast.info('ABRIR MODAL [ENCAMINHAMENTO]')
-    }
     const password = passwords.find((pass) => pass.id === passwordId)
+
+    if (
+      fowarded &&
+      !location &&
+      (password?.deskCaller !== selectedLocal?.value ||
+        password?.location !== selectedPosition?.value)
+    ) {
+      return setCallPasswordId(passwordId)
+    }
 
     io.emit(socketEvents.reception.CALL_PASSWORD, {
       token: session?.user.token,
       id: passwordId,
       customText: password?.customTextCall || '',
       location: {
-        deskCaller: selectedLocal,
-        location: selectedPosition,
-        panelsToCall: selectedPanel ? [selectedPanel?.id] : [],
+        deskCaller: location?.deskCaller || selectedLocal,
+        location: location?.location || selectedPosition,
+        panelsToCall: selectedPanel ? [selectedPanel?.value] : [],
       },
     })
+    toast.info(`Chamando senha: ${password?.password}`)
+    setCallPasswordId('')
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
@@ -151,6 +171,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         updatePassword,
         dismissPassword,
         confirmPassword,
+        callPasswordId,
+        setCallPasswordId,
       }}
     >
       {children}

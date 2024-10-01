@@ -31,6 +31,7 @@ import {
   TableRow,
 } from '../ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
+import { CallFowardedPasswordDialog } from './callFowardedPasswordDialog'
 import { CallTableFilters } from './callTableFilters'
 import { ConfirmPasswordDialog } from './confirmPasswordDialog'
 import { FowardPasswordDialog } from './fowardPasswordDialog'
@@ -38,9 +39,11 @@ import { RemovePasswordDialog } from './removePasswordDialog'
 import { TableInput } from './tableInput'
 
 export function CallTable() {
-  const { callPassword, updatePassword } = useQueueManager()
+  const { callPassword, updatePassword, callPasswordId, setCallPasswordId } =
+    useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
+
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
     state.actions.setPasswords,
@@ -303,8 +306,8 @@ export function CallTable() {
                       >
                         <CheckCircle className="mr-2 !size-4" />
                         Iniciar
-                      </Button>
-                      <FowardPasswordDialog />
+                      </Button> 
+                      <FowardPasswordDialog passwordId={password.id} />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -324,6 +327,17 @@ export function CallTable() {
         open={!!passwordForConfirmId}
         onOpenChange={() => setPasswordForConfirmId('')}
         confirmPasswordId={passwordForConfirmId}
+      />
+
+      <CallFowardedPasswordDialog
+        passwordId={callPasswordId}
+        open={!!callPasswordId}
+        onOpenChange={(open) => {
+          if (open) {
+            return setCallPasswordId(callPasswordId)
+          }
+          setCallPasswordId('')
+        }}
       />
     </div>
   )
