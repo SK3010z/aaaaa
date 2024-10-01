@@ -51,8 +51,7 @@ export function CallTable() {
 
   const [selectedService, selectedPriority, selectedOrder] =
     useCallFiltersStore((state) => [
-      state.selectedService,
-      state.selectedStatus,
+      state.selectedService, 
       state.selectedPriority,
       state.selectedOrder,
     ])
