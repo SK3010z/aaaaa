@@ -33,12 +33,12 @@ export function CallTableFilters() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" className="size-9 p-0"> 
-               <CallFiltersForm />
+            <Button variant="ghost" className="size-9 p-0">
+              <CallFiltersForm />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <span>Filtrar</span> 
+            <span>Filtrar</span>
           </TooltipContent>
         </Tooltip>
 
