@@ -36,7 +36,7 @@ interface PanelAndTotemStoreData {
   ) => void
   handleUpdateClassification: (
     control: string,
-    value: string,
+    value: string | number | boolean,
     id: string,
   ) => void
   handleConnectServiceToPanel: (

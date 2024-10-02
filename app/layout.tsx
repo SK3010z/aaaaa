@@ -9,7 +9,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: '4Senhas',
+  title: '4Filas',
   description: 'Gerencie suas filas de forma fácil',
 }
 
