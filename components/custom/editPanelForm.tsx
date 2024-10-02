@@ -108,7 +108,7 @@ export const EditPanelForm: React.FC<{
             Configuração de chamada
           </label>
           <Controller
-            name="callConfig"
+            name="passwordCallConfiguration"
             control={control}
             defaultValue={data.panel?.passwordCallConfiguration}
             render={({ field }) => (
