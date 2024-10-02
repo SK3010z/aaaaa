@@ -23,7 +23,9 @@ export function BreadCrumbs() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem className="text-primary">
-          <BreadcrumbPage className="font-medium">Breadcrumb</BreadcrumbPage>
+          <BreadcrumbPage className="font-medium">
+            Fila de senhas
+          </BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
