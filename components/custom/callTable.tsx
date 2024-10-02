@@ -383,12 +383,13 @@ export function CallTable() {
                         </div>
                       ) : (
                         <Button
-                          className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                          data-closed={password.closed}
+                          className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20 data-[closed=true]:bg-neutral-300 data-[closed=true]:text-neutral-500"
                           variant="custom"
                           onClick={() => startPassword(password.id, 'START')}
                         >
                           <CheckCircle className="mr-2 !size-4" />
-                          Iniciar
+                          {password.closed ? 'Encerrado' : 'Iniciar'}
                         </Button>
                       )}
 
