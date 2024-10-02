@@ -24,6 +24,7 @@ export type QueueManagerContextData = {
     fowarded?: boolean,
     location?: { deskCaller: string; location: string },
   ) => void
+  requestPasswordQueue: () => void
   startPassword: (passwordId: string, type: string) => void
   updatePassword: (data: Partial<ReceptionQueuePassword>) => void
   dismissPassword: (passwordId: string, reason: string) => void
@@ -235,6 +236,12 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.emit(socketEvents.reception.CONFIRM_PASSWORD, data)
   }
 
+  function requestPasswordQueue() {
+    io.emit(socketEvents.reception.RECEPTION_CONNECTED, {
+      token: session?.user.token,
+    })
+  }
+
   return (
     <QueueManagerContext.Provider
       value={{
@@ -249,6 +256,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         summaryPasswordData,
         setSearchPassword,
         searchPassword,
+        requestPasswordQueue,
       }}
     >
       {children}
