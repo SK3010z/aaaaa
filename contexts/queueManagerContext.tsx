@@ -137,6 +137,13 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
+    const passIdx = passwords.findIndex((pwd) => pwd.id === data.id)
+    if (passIdx >= 0) {
+      const newPasswords = produce(passwords, (draft) => {
+        draft[passIdx] = { ...draft[passIdx], ...data }
+      })
+      setPasswords(newPasswords)
+    }
     io.emit(socketEvents.reception.UPDATE_PASSWORD, {
       ...data,
       token: session?.user.token,
