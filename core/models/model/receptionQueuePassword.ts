@@ -11,4 +11,7 @@ export interface ReceptionQueuePassword {
   scheduledTime?: string
   deskCaller?: string
   location?: string
+  started?: boolean
+  startedAt?: Date
+  closed?: boolean
 }

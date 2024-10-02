@@ -37,10 +37,17 @@ import { ConfirmPasswordDialog } from './confirmPasswordDialog'
 import { FowardPasswordDialog } from './fowardPasswordDialog'
 import { RemovePasswordDialog } from './removePasswordDialog'
 import { TableInput } from './tableInput'
+import { TimerCount } from './timerCount'
 
 export function CallTable() {
-  const { callPassword, updatePassword, callPasswordId, setCallPasswordId } =
-    useQueueManager()
+  const {
+    callPassword,
+    updatePassword,
+    callPasswordId,
+    setCallPasswordId,
+    startPassword,
+    searchPassword,
+  } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
 
@@ -49,12 +56,21 @@ export function CallTable() {
     state.actions.setPasswords,
   ])
 
-  const [selectedService, selectedPriority, selectedOrder] =
-    useCallFiltersStore((state) => [
-      state.selectedService,
-      state.selectedPriority,
-      state.selectedOrder,
-    ])
+  const [
+    selectedService,
+    selectedPriority,
+    selectedOrder,
+    selectedStatus,
+    selectedLocal,
+    selectedPosition,
+  ] = useCallFiltersStore((state) => [
+    state.selectedService,
+    state.selectedPriority,
+    state.selectedOrder,
+    state.selectedStatus,
+    state.selectedLocal,
+    state.selectedPosition,
+  ])
 
   const filteredPasswords = useMemo(() => {
     if (!passwords) return null
@@ -65,16 +81,50 @@ export function CallTable() {
       selectedPriority.includes('normal')
     )
 
-    const pwds =
-      selectedService.length === 0
-        ? passwords
-        : passwords.filter((password) =>
-            selectedService.some(
-              (service) => service.value === password.passwordId,
-            ),
-          )
+    const pwds = passwords.filter((password) => {
+      const searchMatch =
+        searchPassword === '' ||
+        password.password.includes(searchPassword) ||
+        password.customTextCall?.includes(searchPassword) ||
+        password.observation?.includes(searchPassword) ||
+        password.scheduledTime?.includes(searchPassword)
 
-    const sortedPwds = pwds.sort((a, b) => {
+      const serviceMatch =
+        selectedService.length === 0 ||
+        selectedService.some((service) => service.value === password.passwordId)
+
+      const statusMatch =
+        selectedStatus.length === 0 ||
+        selectedStatus.includes(
+          password.started
+            ? 'started'
+            : password.closed
+              ? 'closed'
+              : password.fowarded
+                ? 'forwarded'
+                : '',
+        )
+
+      const localMatch =
+        selectedLocal === 'all' ||
+        selectedLocal === '' ||
+        selectedLocal === password.deskCaller
+
+      const positionMatch =
+        selectedPosition === 'all' ||
+        selectedPosition === '' ||
+        selectedPosition === password.location
+
+      return (
+        serviceMatch &&
+        statusMatch &&
+        localMatch &&
+        positionMatch &&
+        searchMatch
+      )
+    })
+
+    const sortedPwds = [...pwds].slice().sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
 
@@ -108,22 +158,45 @@ export function CallTable() {
           (selectedPriority.includes('normal') || filtered),
       ),
     ]
-  }, [selectedService, selectedPriority, passwords])
+  }, [
+    selectedService,
+    selectedPriority,
+    selectedOrder,
+    selectedStatus,
+    passwords,
+    selectedLocal,
+    selectedPosition,
+    searchPassword,
+  ])
 
   if (selectedOrder === 'hour') {
     filteredPasswords?.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    })
+  } else if (selectedOrder === 'waitTime') {
+    filteredPasswords?.sort((a, b) => {
+      if (a.startedAt && b.startedAt) {
+        return new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime()
+      }
+
+      if (a.startedAt) return -1
+      if (b.startedAt) return 1
+
+      return 0
     })
   }
 
   function onPasswordChange(
     field: keyof ReceptionQueuePassword,
     value: string | never,
-    index: number,
+    id: string,
   ) {
     const organizedPasswords = produce(passwords, (draft) => {
-      const password = draft[index]
-      password[field] = value as never
+      const passwordIndex = draft.findIndex((pwd) => pwd.id === id)
+      if (passwordIndex !== -1) {
+        const password = draft[passwordIndex]
+        password[field] = value as never
+      }
     })
     setPasswords(organizedPasswords)
   }
@@ -155,7 +228,7 @@ export function CallTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPasswords?.map((password, index) => (
+              {filteredPasswords?.map((password) => (
                 <TableRow key={password.id}>
                   <TableCell>
                     <DropdownMenu modal>
@@ -202,7 +275,7 @@ export function CallTable() {
                           onPasswordChange(
                             'customTextCall',
                             e.target.value,
-                            index,
+                            password.id,
                           )
                         }
                         value={password.customTextCall || ''}
@@ -221,7 +294,11 @@ export function CallTable() {
                         type="text"
                         placeholder="Observação"
                         onChange={(e) =>
-                          onPasswordChange('observation', e.target.value, index)
+                          onPasswordChange(
+                            'observation',
+                            e.target.value,
+                            password.id,
+                          )
                         }
                         value={password.observation || ''}
                         onBlur={() =>
@@ -243,7 +320,7 @@ export function CallTable() {
                           onPasswordChange(
                             'scheduledTime',
                             e.target.value,
-                            index,
+                            password.id,
                           )
                         }}
                         value={password.scheduledTime || ''}
@@ -288,7 +365,9 @@ export function CallTable() {
                     </div>
                   </TableCell>
 
-                  <TableCell>00:00:00</TableCell>
+                  <TableCell>
+                    <TimerCount startDate={password.createdAt} />
+                  </TableCell>
 
                   <TableCell>
                     <div className="flex gap-4">
@@ -302,13 +381,33 @@ export function CallTable() {
                         <Megaphone className="mr-2 !size-4" />
                         Chamar
                       </Button>
-                      <Button
-                        className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                        variant="custom"
-                      >
-                        <CheckCircle className="mr-2 !size-4" />
-                        Iniciar
-                      </Button>
+
+                      {password.started ? (
+                        <div className="relative">
+                          <div className="absolute bg-red-500/10 text-red-500 top-[-19px] right-0 text-right border border-red-300 rounded-lg text-[11px] px-2">
+                            <TimerCount startDate={password.startedAt} />
+                          </div>
+                          <Button
+                            className="h-6 bg-red-500/10 text-red-500 hover:bg-green-500/20"
+                            variant="custom"
+                            onClick={() => startPassword(password.id, 'CLOSE')}
+                          >
+                            <CheckCircle className="mr-2 !size-4" />
+                            Encerrar
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          data-closed={password.closed}
+                          className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20 data-[closed=true]:bg-neutral-300 data-[closed=true]:text-neutral-500"
+                          variant="custom"
+                          onClick={() => startPassword(password.id, 'START')}
+                        >
+                          <CheckCircle className="mr-2 !size-4" />
+                          {password.closed ? 'Encerrado' : 'Iniciar'}
+                        </Button>
+                      )}
+
                       <FowardPasswordDialog passwordId={password.id} />
                     </div>
                   </TableCell>

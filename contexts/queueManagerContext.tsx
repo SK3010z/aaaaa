@@ -24,17 +24,30 @@ export type QueueManagerContextData = {
     fowarded?: boolean,
     location?: { deskCaller: string; location: string },
   ) => void
+  startPassword: (passwordId: string, type: string) => void
   updatePassword: (data: Partial<ReceptionQueuePassword>) => void
   dismissPassword: (passwordId: string, reason: string) => void
   confirmPassword: (passwordId: string) => void
   callPasswordId: string
   setCallPasswordId: (callPasswordId: string) => void
+  summaryPassword: () => void
+  summaryPasswordData: {
+    lastPassword: string
+    totalCalls: number
+  }
+  searchPassword: string
+  setSearchPassword: (searchPassword: string) => void
 }
 
 const QueueManagerContext = createContext({} as QueueManagerContextData)
 
 export function QueueManagerProvider({ children }: PropsWithChildren) {
   const [callPasswordId, setCallPasswordId] = useState('')
+  const [summaryPasswordData, setSummaryPasswordData] = useState({
+    lastPassword: '',
+    totalCalls: 0,
+  })
+  const [searchPassword, setSearchPassword] = useState('')
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
     state.actions.setPasswords,
@@ -112,6 +125,15 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     })
     toast.info(`Chamando senha: ${password?.password}`)
     setCallPasswordId('')
+    summaryPassword()
+  }
+
+  function startPassword(passwordId: string, type: string) {
+    io.emit(socketEvents.reception.START_PASSWORD, {
+      token: session?.user.token,
+      type,
+      id: passwordId,
+    })
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
@@ -128,10 +150,42 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     [passwords, setPasswords],
   )
 
+  const onPasswordStarted = useCallback(
+    (payload: ReceptionQueuePassword) => {
+      const passwordIndex = passwords.findIndex(
+        (pass) => pass.id === payload.id,
+      )
+      const updatedPasswords = [...passwords]
+      updatedPasswords[passwordIndex] = {
+        ...updatedPasswords[passwordIndex],
+        ...payload,
+      }
+      setPasswords(updatedPasswords)
+    },
+    [passwords, setPasswords],
+  )
+
+  const onPasswordSummary = useCallback(
+    (payload: { lastPassword: string; totalCalls: number }) => {
+      console.log('payload')
+      setSummaryPasswordData(payload)
+    },
+    [setSummaryPasswordData],
+  )
+
+  function summaryPassword() {
+    io.emit(socketEvents.reception.SUMMARY_PASSWORD, {
+      token: session?.user.token,
+    })
+  }
+
   useEffect(() => {
     io.on('connect', () => {
       console.log('Socket connected')
       io.emit(socketEvents.reception.RECEPTION_CONNECTED, {
+        token: session?.user.token,
+      })
+      io.emit(socketEvents.reception.SUMMARY_PASSWORD_REQUEST, {
         token: session?.user.token,
       })
     })
@@ -139,11 +193,21 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.on(socketEvents.reception.PASSWORD_UPDATED, onPasswordUpdated)
     io.on(socketEvents.reception.PASSWORD_DISMISSED, onPasswordDismissed)
     io.on(socketEvents.reception.PASSWORD_CONFIRMED, onPasswordDismissed)
+    io.on(socketEvents.reception.PASSWORD_STARTED, onPasswordStarted)
+    io.on(socketEvents.reception.PASSWORD_SUMMARY, onPasswordSummary)
 
     return () => {
       console.log('Socket update')
     }
-  }, [io, onPasswordUpdated, session, onPasswrodsSended, onPasswordDismissed])
+  }, [
+    io,
+    onPasswordUpdated,
+    session,
+    onPasswrodsSended,
+    onPasswordDismissed,
+    onPasswordStarted,
+    onPasswordSummary,
+  ])
 
   function dismissPassword(passwordId: string, reason: string) {
     const data: DismissPasswordDto = {
@@ -173,6 +237,11 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         confirmPassword,
         callPasswordId,
         setCallPasswordId,
+        startPassword,
+        summaryPassword,
+        summaryPasswordData,
+        setSearchPassword,
+        searchPassword,
       }}
     >
       {children}

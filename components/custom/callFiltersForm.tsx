@@ -4,6 +4,7 @@ import { useApi } from '@/core/hooks/useApi'
 import { passwordQueueTypeResponse } from '@/core/models/httpResponses/passwordQueueTypeResponse'
 import { fieldFilter, Service } from '@/core/models/model/callFilter'
 import { useCallFiltersStore } from '@/stores/callFiltersStore'
+import { usePanelStore } from '@/stores/panelStore'
 import { useQuery } from '@tanstack/react-query'
 import { SlidersHorizontal } from 'lucide-react'
 import { Button } from '../ui/button'
@@ -55,6 +56,11 @@ export const CallFiltersForm: React.FC = () => {
     state.actions.setSelectedPriority,
     state.actions.setSelectedStatus,
     state.actions.setSelectedOrder,
+  ])
+
+  const [positions, locals] = usePanelStore((state) => [
+    state.positions,
+    state.locals,
   ])
 
   async function getPasswordQueueTypes() {
@@ -143,9 +149,11 @@ export const CallFiltersForm: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <SlidersHorizontal />
+        <Button variant="ghost" className="size-9 p-0">
+          <SlidersHorizontal />
+        </Button>
       </SheetTrigger>
-      <SheetContent className="bg-white flex flex-col p-0 !max-w-[35rem]">
+      <SheetContent className="bg-white flex flex-col p-0 !max-w-[35rem] overflow-auto">
         <SheetHeader className="px-4 pt-4">
           <SheetTitle>FIltro de listagem</SheetTitle>
           <SheetDescription>
@@ -168,9 +176,12 @@ export const CallFiltersForm: React.FC = () => {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Consultorio">Consultorio</SelectItem>
-                  <SelectItem value="Guiche">Guiche</SelectItem>
-                  <SelectItem value="Sala">Sala</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
+                  {locals.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -184,9 +195,10 @@ export const CallFiltersForm: React.FC = () => {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  {['1', '2', '3', '4'].map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}
+                  <SelectItem value="all">Todos</SelectItem>
+                  {positions.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
