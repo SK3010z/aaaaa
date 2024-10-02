@@ -75,7 +75,7 @@ export function CallTable() {
             ),
           )
           
-    const sortedPwds = pwds.sort((a, b) => {
+    const sortedPwds = [...pwds].slice().sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
 
@@ -115,18 +115,33 @@ export function CallTable() {
     filteredPasswords?.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
+  }else if (selectedOrder === 'waitTime') {// pegar pela startAt
+    filteredPasswords?.sort((a, b) => {
+      if (a.startedAt && b.startedAt) {
+        return new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime();
+      }
+  
+      if (a.startedAt) return -1;
+      if (b.startedAt) return 1;
+  
+      return 0;
+    });
   } 
+ 
 
   function onPasswordChange(
     field: keyof ReceptionQueuePassword,
     value: string | never,
-    index: number,
+    id: string,
   ) {
     const organizedPasswords = produce(passwords, (draft) => {
-      const password = draft[index]
-      password[field] = value as never
-    })
-    setPasswords(organizedPasswords)
+      const passwordIndex = draft.findIndex((pwd) => pwd.id === id); 
+      if (passwordIndex !== -1) { 
+        const password = draft[passwordIndex];
+        password[field] = value as never;
+      }
+    });
+    setPasswords(organizedPasswords);
   }
 
   function handleInputBlur(
@@ -203,7 +218,7 @@ export function CallTable() {
                           onPasswordChange(
                             'customTextCall',
                             e.target.value,
-                            index,
+                            password.id,
                           )
                         }
                         value={password.customTextCall || ''}
@@ -222,7 +237,7 @@ export function CallTable() {
                         type="text"
                         placeholder="Observação"
                         onChange={(e) =>
-                          onPasswordChange('observation', e.target.value, index)
+                          onPasswordChange('observation', e.target.value, password.id)
                         }
                         value={password.observation || ''}
                         onBlur={() =>
@@ -244,7 +259,7 @@ export function CallTable() {
                           onPasswordChange(
                             'scheduledTime',
                             e.target.value,
-                            index,
+                            password.id,
                           )
                         }}
                         value={password.scheduledTime || ''}

@@ -145,7 +145,7 @@ export const CallFiltersForm: React.FC = () => {
       <SheetTrigger asChild>
         <SlidersHorizontal />
       </SheetTrigger>
-      <SheetContent className="bg-white flex flex-col p-0 !max-w-[35rem]">
+      <SheetContent className="bg-white flex flex-col p-0 !max-w-[35rem] overflow-auto">
         <SheetHeader className="px-4 pt-4">
           <SheetTitle>FIltro de listagem</SheetTitle>
           <SheetDescription>
