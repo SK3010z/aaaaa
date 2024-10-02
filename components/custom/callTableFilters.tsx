@@ -26,21 +26,11 @@ export function CallTableFilters() {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" className="size-9 p-0">
-              <RefreshCcw />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <span>Atualizar</span>
-          </TooltipContent>
-        </Tooltip> */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" className="size-9 p-0">
+            <div>
               <CallFiltersForm />
-            </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
             <span>Filtrar</span>

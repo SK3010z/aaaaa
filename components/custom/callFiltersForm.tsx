@@ -149,7 +149,9 @@ export const CallFiltersForm: React.FC = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <SlidersHorizontal />
+        <Button variant="ghost" className="size-9 p-0">
+          <SlidersHorizontal />
+        </Button>
       </SheetTrigger>
       <SheetContent className="bg-white flex flex-col p-0 !max-w-[35rem] overflow-auto">
         <SheetHeader className="px-4 pt-4">
