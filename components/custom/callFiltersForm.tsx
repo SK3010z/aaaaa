@@ -174,6 +174,7 @@ export const CallFiltersForm: React.FC = () => {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
                   {locals.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
                       {item.label}
@@ -192,6 +193,7 @@ export const CallFiltersForm: React.FC = () => {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
                   {positions.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
                       {item.label}

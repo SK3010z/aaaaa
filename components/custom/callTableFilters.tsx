@@ -1,7 +1,7 @@
 'use client'
 import { useQueueManager } from '@/contexts/queueManagerContext'
 import { useQueueStore } from '@/stores/queueStore'
-import { Megaphone, RefreshCcw, Search } from 'lucide-react'
+import { Megaphone, Search } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
@@ -26,7 +26,7 @@ export function CallTableFilters() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Tooltip>
+        {/* <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" className="size-9 p-0">
               <RefreshCcw />
@@ -35,8 +35,7 @@ export function CallTableFilters() {
           <TooltipContent>
             <span>Atualizar</span>
           </TooltipContent>
-        </Tooltip>
-
+        </Tooltip> */}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" className="size-9 p-0">
