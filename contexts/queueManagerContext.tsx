@@ -187,6 +187,13 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     })
   }
 
+  const onPasswordGenerated = useCallback(
+    (data: ReceptionQueuePassword) => {
+      setPasswords([...passwords, data])
+    },
+    [passwords, setPasswords],
+  )
+
   useEffect(() => {
     io.on('connect', () => {
       console.log('Socket connected')
@@ -203,6 +210,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.on(socketEvents.reception.PASSWORD_CONFIRMED, onPasswordDismissed)
     io.on(socketEvents.reception.PASSWORD_STARTED, onPasswordStarted)
     io.on(socketEvents.reception.PASSWORD_SUMMARY, onPasswordSummary)
+    io.on(socketEvents.reception.PASSWORD_GENERATED, onPasswordGenerated)
 
     return () => {
       console.log('Socket update')
@@ -215,6 +223,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     onPasswordDismissed,
     onPasswordStarted,
     onPasswordSummary,
+    onPasswordGenerated,
   ])
 
   function dismissPassword(passwordId: string, reason: string) {
