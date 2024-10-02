@@ -46,7 +46,7 @@ export function CallTable() {
     callPasswordId,
     setCallPasswordId,
     startPassword,
-    summaryPassword
+    summaryPassword,
   } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
@@ -198,7 +198,7 @@ export function CallTable() {
 
   useEffect(() => {
     summaryPassword()
-  }, [])
+  }, [summaryPassword])
 
   return (
     <div className="px-8 pb-6 flex flex-col flex-1">
