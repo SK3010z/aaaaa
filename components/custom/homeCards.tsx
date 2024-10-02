@@ -40,6 +40,7 @@ const descriptionBaseStyle = cva('text-base leading-none font-medium')
 export function HomeCards() {
   const { summaryPasswordData } = useQueueManager()
   const [passwords] = useQueueStore((state) => [state.passwords])
+
   return (
     <ul className="grid grid-cols-3 gap-5 py-6 px-8">
       <li
