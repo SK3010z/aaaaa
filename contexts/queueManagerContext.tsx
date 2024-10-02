@@ -43,7 +43,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   const [callPasswordId, setCallPasswordId] = useState('')
   const [summaryPasswordData, setSummaryPasswordData] = useState({
     lastPassword: '',
-    totalCalls: 0
+    totalCalls: 0,
   })
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
@@ -169,9 +169,9 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     [setSummaryPasswordData],
   )
 
-  function summaryPassword() {  
+  function summaryPassword() {
     io.emit(socketEvents.reception.SUMMARY_PASSWORD, {
-      token: session?.user.token
+      token: session?.user.token,
     })
   }
 
@@ -199,7 +199,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     onPasswrodsSended,
     onPasswordDismissed,
     onPasswordStarted,
-    onPasswordSummary
+    onPasswordSummary,
   ])
 
   function dismissPassword(passwordId: string, reason: string) {
@@ -232,7 +232,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         setCallPasswordId,
         startPassword,
         summaryPassword,
-        summaryPasswordData
+        summaryPasswordData,
       }}
     >
       {children}

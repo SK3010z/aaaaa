@@ -46,7 +46,7 @@ export function CallTable() {
     callPasswordId,
     setCallPasswordId,
     startPassword,
-    summaryPassword
+    summaryPassword,
   } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
@@ -196,7 +196,7 @@ export function CallTable() {
     updatePassword(obj)
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     summaryPassword()
   }, [summaryPassword])
 
