@@ -24,10 +24,7 @@ export type QueueManagerContextData = {
     fowarded?: boolean,
     location?: { deskCaller: string; location: string },
   ) => void
-  startPassword: (
-    passwordId: string,
-    type: string
-  ) => void
+  startPassword: (passwordId: string, type: string) => void
   updatePassword: (data: Partial<ReceptionQueuePassword>) => void
   dismissPassword: (passwordId: string, reason: string) => void
   confirmPassword: (passwordId: string) => void
@@ -118,15 +115,12 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     setCallPasswordId('')
   }
 
-  function startPassword(
-    passwordId: string,
-    type: string
-  ) {  
+  function startPassword(passwordId: string, type: string) {
     io.emit(socketEvents.reception.START_PASSWORD, {
       token: session?.user.token,
-      type: type,
+      type,
       id: passwordId,
-    }) 
+    })
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
@@ -144,14 +138,16 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   )
 
   const onPasswordStarted = useCallback(
-    (payload: ReceptionQueuePassword) => {  
-      const passwordIndex = passwords.findIndex((pass) => pass.id === payload.id);
-        const updatedPasswords = [...passwords];
-        updatedPasswords[passwordIndex] = { 
-          ...updatedPasswords[passwordIndex], 
-          ...payload   
-        };
-        setPasswords(updatedPasswords);
+    (payload: ReceptionQueuePassword) => {
+      const passwordIndex = passwords.findIndex(
+        (pass) => pass.id === payload.id,
+      )
+      const updatedPasswords = [...passwords]
+      updatedPasswords[passwordIndex] = {
+        ...updatedPasswords[passwordIndex],
+        ...payload,
+      }
+      setPasswords(updatedPasswords)
     },
     [passwords, setPasswords],
   )
@@ -172,7 +168,14 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     return () => {
       console.log('Socket update')
     }
-  }, [io, onPasswordUpdated, session, onPasswrodsSended, onPasswordDismissed, onPasswordStarted])
+  }, [
+    io,
+    onPasswordUpdated,
+    session,
+    onPasswrodsSended,
+    onPasswordDismissed,
+    onPasswordStarted,
+  ])
 
   function dismissPassword(passwordId: string, reason: string) {
     const data: DismissPasswordDto = {
@@ -202,7 +205,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         confirmPassword,
         callPasswordId,
         setCallPasswordId,
-        startPassword
+        startPassword,
       }}
     >
       {children}
