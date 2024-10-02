@@ -37,9 +37,10 @@ import { ConfirmPasswordDialog } from './confirmPasswordDialog'
 import { FowardPasswordDialog } from './fowardPasswordDialog'
 import { RemovePasswordDialog } from './removePasswordDialog'
 import { TableInput } from './tableInput'
+import { TimerCount } from './timerCount'
 
 export function CallTable() {
-  const { callPassword, updatePassword, callPasswordId, setCallPasswordId } =
+  const { callPassword, updatePassword, callPasswordId, setCallPasswordId, startPassword } =
     useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
@@ -54,7 +55,7 @@ export function CallTable() {
       state.selectedService,
       state.selectedPriority,
       state.selectedOrder,
-    ])
+  ])
 
   const filteredPasswords = useMemo(() => {
     if (!passwords) return null
@@ -64,7 +65,7 @@ export function CallTable() {
       selectedPriority.includes('priority') ||
       selectedPriority.includes('normal')
     )
-
+   
     const pwds =
       selectedService.length === 0
         ? passwords
@@ -73,7 +74,7 @@ export function CallTable() {
               (service) => service.value === password.passwordId,
             ),
           )
-
+          
     const sortedPwds = pwds.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
@@ -108,13 +109,13 @@ export function CallTable() {
           (selectedPriority.includes('normal') || filtered),
       ),
     ]
-  }, [selectedService, selectedPriority, passwords])
+  }, [selectedService, selectedOrder, selectedPriority, passwords])
 
   if (selectedOrder === 'hour') {
     filteredPasswords?.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
-  }
+  } 
 
   function onPasswordChange(
     field: keyof ReceptionQueuePassword,
@@ -288,7 +289,9 @@ export function CallTable() {
                     </div>
                   </TableCell>
 
-                  <TableCell>00:00:00</TableCell>
+                  <TableCell>
+                      <TimerCount startDate={password.createdAt} /> 
+                  </TableCell>
 
                   <TableCell>
                     <div className="flex gap-4">
@@ -302,13 +305,33 @@ export function CallTable() {
                         <Megaphone className="mr-2 !size-4" />
                         Chamar
                       </Button>
+
+                      {password.started ? (
+                        <div className="relative">
+                          <div className="absolute bg-red-500/10 text-red-500 top-[-19px] right-0 text-right border border-red-300 rounded-lg text-[11px] px-2">
+                           <TimerCount startDate={password.startedAt} />
+                          </div> 
+                          <Button
+                            className="h-6 bg-red-500/10 text-red-500 hover:bg-green-500/20"
+                            variant="custom"
+                            onClick={() => startPassword(password.id, 'CLOSE')}
+                          >
+                            <CheckCircle className="mr-2 !size-4" />
+                            Encerrar
+                          </Button>
+                      </div>
+                      ) : (
                       <Button
                         className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
                         variant="custom"
-                      >
+                        onClick={() =>
+                          startPassword(password.id, 'START')
+                        } >
                         <CheckCircle className="mr-2 !size-4" />
-                        Iniciar
-                      </Button>
+                          Iniciar
+                        </Button>
+                      )}
+
                       <FowardPasswordDialog passwordId={password.id} />
                     </div>
                   </TableCell>
