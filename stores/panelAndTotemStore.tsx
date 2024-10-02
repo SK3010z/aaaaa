@@ -144,10 +144,9 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
   ]
 
   const passwordCallConfigurations = [
-    { value: 'all', label: 'Todos' },
-    { value: 'none', label: 'Não chamar' },
-    { value: 'name', label: 'Nome' },
-    { value: 'socialName', label: 'Nome Social' },
+    { value: 'all', label: 'Todos' }, 
+    { value: 'name', label: 'Chamar Nome' }, 
+    { value: 'notCallName', label: 'Não chamar nome' }, 
   ]
 
   const fetchPanels = useCallback(
