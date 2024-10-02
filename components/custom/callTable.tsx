@@ -55,12 +55,21 @@ export function CallTable() {
     state.actions.setPasswords,
   ])
 
-  const [selectedService, selectedPriority, selectedOrder] =
-    useCallFiltersStore((state) => [
-      state.selectedService,
-      state.selectedPriority,
-      state.selectedOrder,
-    ])
+  const [
+    selectedService,
+    selectedPriority,
+    selectedOrder,
+    selectedStatus,
+    selectedLocal,
+    selectedPosition,
+  ] = useCallFiltersStore((state) => [
+    state.selectedService,
+    state.selectedPriority,
+    state.selectedOrder,
+    state.selectedStatus,
+    state.selectedLocal,
+    state.selectedPosition,
+  ])
 
   const filteredPasswords = useMemo(() => {
     if (!passwords) return null
@@ -72,13 +81,41 @@ export function CallTable() {
     )
 
     const pwds =
-      selectedService.length === 0
+      selectedService.length === 0 &&
+      selectedStatus.length === 0 &&
+      selectedLocal === '' &&
+      selectedPosition === ''
         ? passwords
-        : passwords.filter((password) =>
-            selectedService.some(
-              (service) => service.value === password.passwordId,
-            ),
-          )
+        : passwords.filter((password) => {
+            const serviceMatch =
+              selectedService.length === 0 ||
+              selectedService.some(
+                (service) => service.value === password.passwordId,
+              )
+
+            const statusMatch =
+              selectedStatus.length === 0 ||
+              selectedStatus.includes(
+                password.started
+                  ? 'started'
+                  : password.closed
+                    ? 'closed'
+                    : password.fowarded
+                      ? 'forwarded'
+                      : '',
+              )
+
+            const localMatch =
+              selectedLocal === '' || selectedLocal === password.deskCaller
+            const positionMatch =
+              selectedPosition === '' || selectedPosition === password.location
+
+            return serviceMatch && statusMatch && localMatch && positionMatch
+          })
+
+    console.log('pwds', pwds)
+    console.log('selectedLocal', selectedLocal)
+    console.log('selectedPosition', selectedPosition)
 
     const sortedPwds = [...pwds].slice().sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -114,14 +151,21 @@ export function CallTable() {
           (selectedPriority.includes('normal') || filtered),
       ),
     ]
-  }, [selectedService, selectedPriority, passwords])
+  }, [
+    selectedService,
+    selectedPriority,
+    selectedOrder,
+    selectedStatus,
+    passwords,
+    selectedLocal,
+    selectedPosition,
+  ])
 
   if (selectedOrder === 'hour') {
     filteredPasswords?.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
   } else if (selectedOrder === 'waitTime') {
-    // pegar pela startAt
     filteredPasswords?.sort((a, b) => {
       if (a.startedAt && b.startedAt) {
         return new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime()
