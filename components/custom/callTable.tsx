@@ -47,6 +47,7 @@ export function CallTable() {
     setCallPasswordId,
     startPassword,
     summaryPassword,
+    searchPassword,
   } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
@@ -82,6 +83,13 @@ export function CallTable() {
     )
 
     const pwds = passwords.filter((password) => {
+      const searchMatch =
+        searchPassword === '' ||
+        password.password.includes(searchPassword) ||
+        password.customTextCall?.includes(searchPassword) ||
+        password.observation?.includes(searchPassword) ||
+        password.scheduledTime?.includes(searchPassword)
+
       const serviceMatch =
         selectedService.length === 0 ||
         selectedService.some((service) => service.value === password.passwordId)
@@ -108,7 +116,13 @@ export function CallTable() {
         selectedPosition === '' ||
         selectedPosition === password.location
 
-      return serviceMatch && statusMatch && localMatch && positionMatch
+      return (
+        serviceMatch &&
+        statusMatch &&
+        localMatch &&
+        positionMatch &&
+        searchMatch
+      )
     })
 
     const sortedPwds = [...pwds].slice().sort((a, b) => {
@@ -153,6 +167,7 @@ export function CallTable() {
     passwords,
     selectedLocal,
     selectedPosition,
+    searchPassword,
   ])
 
   if (selectedOrder === 'hour') {

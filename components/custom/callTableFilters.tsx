@@ -9,7 +9,7 @@ import { CallFiltersForm } from './callFiltersForm'
 import { NewPasswordDialog } from './newPasswordDialog'
 
 export function CallTableFilters() {
-  const { callPassword } = useQueueManager()
+  const { callPassword, setSearchPassword } = useQueueManager()
   const [passwords] = useQueueStore((state) => [state.passwords])
   function handleCallNextPassword() {
     const nextPassword = passwords[0]
@@ -21,7 +21,13 @@ export function CallTableFilters() {
   return (
     <div className="flex items-center justify-between p-6">
       <div className="relative flex items-center">
-        <Input className="h-10 pl-10 min-w-[20rem]" placeholder="pesquisar" />
+        <Input
+          className="h-10 pl-10 min-w-[20rem]"
+          placeholder="pesquisar"
+          onInputCapture={(e) => {
+            setSearchPassword(e.currentTarget.value)
+          }}
+        />
         <Search className="size-4 absolute left-4" />
       </div>
 
