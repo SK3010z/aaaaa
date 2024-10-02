@@ -35,6 +35,8 @@ export type QueueManagerContextData = {
     lastPassword: string
     totalCalls: number
   }
+  searchPassword: string
+  setSearchPassword: (searchPassword: string) => void
 }
 
 const QueueManagerContext = createContext({} as QueueManagerContextData)
@@ -45,6 +47,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     lastPassword: '',
     totalCalls: 0,
   })
+  const [searchPassword, setSearchPassword] = useState('')
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
     state.actions.setPasswords,
@@ -233,6 +236,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         startPassword,
         summaryPassword,
         summaryPasswordData,
+        setSearchPassword,
+        searchPassword,
       }}
     >
       {children}
