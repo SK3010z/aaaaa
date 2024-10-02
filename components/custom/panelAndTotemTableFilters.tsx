@@ -15,7 +15,7 @@ export function PanelAndTotemTableFilters() {
         <Input
           className="h-10 pl-10 min-w-[20rem]"
           placeholder="pesquisar"
-          onInputCapture={(e) => {
+          onChangeCapture={(e) => {
             handleSearch(e.currentTarget.value)
           }}
         />
