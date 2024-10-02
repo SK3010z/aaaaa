@@ -4,6 +4,7 @@ import { useApi } from '@/core/hooks/useApi'
 import { passwordQueueTypeResponse } from '@/core/models/httpResponses/passwordQueueTypeResponse'
 import { fieldFilter, Service } from '@/core/models/model/callFilter'
 import { useCallFiltersStore } from '@/stores/callFiltersStore'
+import { usePanelStore } from '@/stores/panelStore'
 import { useQuery } from '@tanstack/react-query'
 import { SlidersHorizontal } from 'lucide-react'
 import { Button } from '../ui/button'
@@ -55,6 +56,14 @@ export const CallFiltersForm: React.FC = () => {
     state.actions.setSelectedPriority,
     state.actions.setSelectedStatus,
     state.actions.setSelectedOrder,
+  ])
+
+  const [ 
+    positions,  
+    locals,
+  ] = usePanelStore((state) => [ 
+    state.positions,
+    state.locals, 
   ])
 
   async function getPasswordQueueTypes() {
@@ -162,15 +171,17 @@ export const CallFiltersForm: React.FC = () => {
               <label htmlFor="">Local</label>
               <Select
                 onValueChange={(e) => handleFilter('local', e)}
-                defaultValue={selectedLocal}
+                defaultValue={selectedLocal} 
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Consultorio">Consultorio</SelectItem>
-                  <SelectItem value="Guiche">Guiche</SelectItem>
-                  <SelectItem value="Sala">Sala</SelectItem>
+                <SelectContent> 
+                  {locals.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -184,9 +195,9 @@ export const CallFiltersForm: React.FC = () => {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  {['1', '2', '3', '4'].map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}
+                  {positions.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
