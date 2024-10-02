@@ -163,13 +163,10 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   )
 
   const onPasswordSummary = useCallback(
-    (data:{
-      lastPassword: string
-      totalCalls: number
-    }) => {
-      setSummaryPasswordData(data) 
+    (payload: { lastPassword: string; totalCalls: number }) => {
+      setSummaryPasswordData(payload)
     },
-    [],
+    [setSummaryPasswordData],
   )
 
   function summaryPassword() {  

@@ -56,7 +56,9 @@ export function HomeCards() {
         </div>
         <div>
           <h4 className={descriptionBaseStyle()}>Última senha chamada</h4>
-          <h2 className={titleBaseStyle()}>{summaryPasswordData.lastPassword}</h2>
+          <h2 className={titleBaseStyle()}>
+            {summaryPasswordData.lastPassword}
+          </h2>
         </div>
       </li>
 

@@ -196,9 +196,9 @@ export function CallTable() {
     updatePassword(obj)
   }
 
-  useEffect(() => {
+  useEffect(() => { 
     summaryPassword()
-  }, [])
+  }, [summaryPassword])
 
   return (
     <div className="px-8 pb-6 flex flex-col flex-1">
