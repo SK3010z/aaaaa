@@ -14,7 +14,7 @@ import {
   Trash,
   User,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../ui/button'
 import {
   DropdownMenu,
@@ -46,6 +46,7 @@ export function CallTable() {
     callPasswordId,
     setCallPasswordId,
     startPassword,
+    summaryPassword
   } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
@@ -194,6 +195,10 @@ export function CallTable() {
     const obj = { [field]: value, id }
     updatePassword(obj)
   }
+
+  useEffect(() => {
+    summaryPassword()
+  }, [])
 
   return (
     <div className="px-8 pb-6 flex flex-col flex-1">

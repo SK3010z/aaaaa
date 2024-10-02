@@ -30,12 +30,21 @@ export type QueueManagerContextData = {
   confirmPassword: (passwordId: string) => void
   callPasswordId: string
   setCallPasswordId: (callPasswordId: string) => void
+  summaryPassword: () => void
+  summaryPasswordData: {
+    lastPassword: string
+    totalCalls: number
+  }
 }
 
 const QueueManagerContext = createContext({} as QueueManagerContextData)
 
 export function QueueManagerProvider({ children }: PropsWithChildren) {
   const [callPasswordId, setCallPasswordId] = useState('')
+  const [summaryPasswordData, setSummaryPasswordData] = useState({
+    lastPassword: '',
+    totalCalls: 0
+  })
   const [passwords, setPasswords] = useQueueStore((state) => [
     state.passwords,
     state.actions.setPasswords,
@@ -113,6 +122,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     })
     toast.info(`Chamando senha: ${password?.password}`)
     setCallPasswordId('')
+    summaryPassword()
   }
 
   function startPassword(passwordId: string, type: string) {
@@ -152,6 +162,22 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     [passwords, setPasswords],
   )
 
+  const onPasswordSummary = useCallback(
+    (data:{
+      lastPassword: string
+      totalCalls: number
+    }) => {
+      setSummaryPasswordData(data) 
+    },
+    [],
+  )
+
+  function summaryPassword() {  
+    io.emit(socketEvents.reception.SUMMARY_PASSWORD, {
+      token: session?.user.token
+    })
+  }
+
   useEffect(() => {
     io.on('connect', () => {
       console.log('Socket connected')
@@ -164,6 +190,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.on(socketEvents.reception.PASSWORD_DISMISSED, onPasswordDismissed)
     io.on(socketEvents.reception.PASSWORD_CONFIRMED, onPasswordDismissed)
     io.on(socketEvents.reception.PASSWORD_STARTED, onPasswordStarted)
+    io.on(socketEvents.reception.PASSWORD_SUMMARY, onPasswordSummary)
 
     return () => {
       console.log('Socket update')
@@ -175,6 +202,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     onPasswrodsSended,
     onPasswordDismissed,
     onPasswordStarted,
+    onPasswordSummary
   ])
 
   function dismissPassword(passwordId: string, reason: string) {
@@ -206,6 +234,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         callPasswordId,
         setCallPasswordId,
         startPassword,
+        summaryPassword,
+        summaryPasswordData
       }}
     >
       {children}
