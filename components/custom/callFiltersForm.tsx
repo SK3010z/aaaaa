@@ -58,12 +58,9 @@ export const CallFiltersForm: React.FC = () => {
     state.actions.setSelectedOrder,
   ])
 
-  const [ 
-    positions,  
-    locals,
-  ] = usePanelStore((state) => [ 
+  const [positions, locals] = usePanelStore((state) => [
     state.positions,
-    state.locals, 
+    state.locals,
   ])
 
   async function getPasswordQueueTypes() {
@@ -171,12 +168,12 @@ export const CallFiltersForm: React.FC = () => {
               <label htmlFor="">Local</label>
               <Select
                 onValueChange={(e) => handleFilter('local', e)}
-                defaultValue={selectedLocal} 
+                defaultValue={selectedLocal}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
-                <SelectContent> 
+                <SelectContent>
                   {locals.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
                       {item.label}
