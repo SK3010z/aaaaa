@@ -174,6 +174,10 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
         fetchPanels({
           name,
         })
+      else
+        fetchPanels({
+          name: '',
+        })
     },
     [fetchPanels],
   )
