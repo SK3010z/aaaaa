@@ -53,11 +53,12 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     state.passwords,
     state.actions.setPasswords,
   ])
-  const [selectedPanel, selectedLocal, selectedPosition] = usePanelStore(
+  const [selectedPanel, selectedLocal, selectedPosition, storedPanels] = usePanelStore(
     (state) => [
       state.selectedPanel,
       state.selectedLocal,
       state.selectedPosition,
+      state.panels,
     ],
   )
   const { data: session } = useSession()
@@ -114,10 +115,14 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
       return setCallPasswordId(passwordId)
     }
 
+    const locationSelect = storedPanels.find(
+      (panel) => panel.id === selectedPanel?.value,
+    )
+  
     io.emit(socketEvents.reception.CALL_PASSWORD, {
       token: session?.user.token,
       id: passwordId,
-      customText: password?.customTextCall || '',
+      customText: (locationSelect?.passwordCallConfiguration === 'notCallName') ? '':password?.customTextCall || '',
       location: {
         deskCaller: location?.deskCaller || selectedLocal?.value,
         location: location?.location || selectedPosition?.value,
