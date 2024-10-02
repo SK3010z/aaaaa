@@ -71,6 +71,13 @@ export function CallTable() {
     state.selectedPosition,
   ])
 
+  function removeAccents(text: string) {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '')
+  }
+
   const filteredPasswords = useMemo(() => {
     if (!passwords) return null
 
@@ -83,10 +90,18 @@ export function CallTable() {
     const pwds = passwords.filter((password) => {
       const searchMatch =
         searchPassword === '' ||
-        password.password.includes(searchPassword) ||
-        password.customTextCall?.includes(searchPassword) ||
-        password.observation?.includes(searchPassword) ||
-        password.scheduledTime?.includes(searchPassword)
+        removeAccents(password.password ?? '')
+          .toUpperCase()
+          .includes(removeAccents(searchPassword).toUpperCase()) ||
+        removeAccents(password.customTextCall ?? '')
+          ?.toUpperCase()
+          .includes(removeAccents(searchPassword).toUpperCase()) ||
+        removeAccents(password.observation ?? '')
+          ?.toUpperCase()
+          .includes(removeAccents(searchPassword).toUpperCase()) ||
+        removeAccents(password.scheduledTime ?? '')
+          ?.toUpperCase()
+          .includes(removeAccents(searchPassword).toUpperCase())
 
       const serviceMatch =
         selectedService.length === 0 ||
