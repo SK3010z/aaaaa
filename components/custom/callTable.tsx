@@ -80,42 +80,35 @@ export function CallTable() {
       selectedPriority.includes('normal')
     )
 
-    const pwds =
-      selectedService.length === 0 &&
-      selectedStatus.length === 0 &&
-      selectedLocal === '' &&
-      selectedPosition === ''
-        ? passwords
-        : passwords.filter((password) => {
-            const serviceMatch =
-              selectedService.length === 0 ||
-              selectedService.some(
-                (service) => service.value === password.passwordId,
-              )
+    const pwds = passwords.filter((password) => {
+      const serviceMatch =
+        selectedService.length === 0 ||
+        selectedService.some((service) => service.value === password.passwordId)
 
-            const statusMatch =
-              selectedStatus.length === 0 ||
-              selectedStatus.includes(
-                password.started
-                  ? 'started'
-                  : password.closed
-                    ? 'closed'
-                    : password.fowarded
-                      ? 'forwarded'
-                      : '',
-              )
+      const statusMatch =
+        selectedStatus.length === 0 ||
+        selectedStatus.includes(
+          password.started
+            ? 'started'
+            : password.closed
+              ? 'closed'
+              : password.fowarded
+                ? 'forwarded'
+                : '',
+        )
 
-            const localMatch =
-              selectedLocal === '' || selectedLocal === password.deskCaller
-            const positionMatch =
-              selectedPosition === '' || selectedPosition === password.location
+      const localMatch =
+        selectedLocal === 'all' ||
+        selectedLocal === '' ||
+        selectedLocal === password.deskCaller
 
-            return serviceMatch && statusMatch && localMatch && positionMatch
-          })
+      const positionMatch =
+        selectedPosition === 'all' ||
+        selectedPosition === '' ||
+        selectedPosition === password.location
 
-    console.log('pwds', pwds)
-    console.log('selectedLocal', selectedLocal)
-    console.log('selectedPosition', selectedPosition)
+      return serviceMatch && statusMatch && localMatch && positionMatch
+    })
 
     const sortedPwds = [...pwds].slice().sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
