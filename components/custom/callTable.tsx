@@ -40,8 +40,13 @@ import { TableInput } from './tableInput'
 import { TimerCount } from './timerCount'
 
 export function CallTable() {
-  const { callPassword, updatePassword, callPasswordId, setCallPasswordId, startPassword } =
-    useQueueManager()
+  const {
+    callPassword,
+    updatePassword,
+    callPasswordId,
+    setCallPasswordId,
+    startPassword,
+  } = useQueueManager()
   const [passwordForDeleteId, setPasswordForDeleteId] = useState('')
   const [passwordForConfirmId, setPasswordForConfirmId] = useState('')
 
@@ -55,7 +60,7 @@ export function CallTable() {
       state.selectedService,
       state.selectedPriority,
       state.selectedOrder,
-  ])
+    ])
 
   const filteredPasswords = useMemo(() => {
     if (!passwords) return null
@@ -65,7 +70,7 @@ export function CallTable() {
       selectedPriority.includes('priority') ||
       selectedPriority.includes('normal')
     )
-   
+
     const pwds =
       selectedService.length === 0
         ? passwords
@@ -74,7 +79,7 @@ export function CallTable() {
               (service) => service.value === password.passwordId,
             ),
           )
-          
+
     const sortedPwds = [...pwds].slice().sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
@@ -109,25 +114,25 @@ export function CallTable() {
           (selectedPriority.includes('normal') || filtered),
       ),
     ]
-  }, [selectedService, selectedOrder, selectedPriority, passwords])
+  }, [selectedService, selectedPriority, passwords])
 
   if (selectedOrder === 'hour') {
     filteredPasswords?.sort((a, b) => {
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     })
-  }else if (selectedOrder === 'waitTime') {// pegar pela startAt
+  } else if (selectedOrder === 'waitTime') {
+    // pegar pela startAt
     filteredPasswords?.sort((a, b) => {
       if (a.startedAt && b.startedAt) {
-        return new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime();
+        return new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime()
       }
-  
-      if (a.startedAt) return -1;
-      if (b.startedAt) return 1;
-  
-      return 0;
-    });
-  } 
- 
+
+      if (a.startedAt) return -1
+      if (b.startedAt) return 1
+
+      return 0
+    })
+  }
 
   function onPasswordChange(
     field: keyof ReceptionQueuePassword,
@@ -135,13 +140,13 @@ export function CallTable() {
     id: string,
   ) {
     const organizedPasswords = produce(passwords, (draft) => {
-      const passwordIndex = draft.findIndex((pwd) => pwd.id === id); 
-      if (passwordIndex !== -1) { 
-        const password = draft[passwordIndex];
-        password[field] = value as never;
+      const passwordIndex = draft.findIndex((pwd) => pwd.id === id)
+      if (passwordIndex !== -1) {
+        const password = draft[passwordIndex]
+        password[field] = value as never
       }
-    });
-    setPasswords(organizedPasswords);
+    })
+    setPasswords(organizedPasswords)
   }
 
   function handleInputBlur(
@@ -171,7 +176,7 @@ export function CallTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPasswords?.map((password, index) => (
+              {filteredPasswords?.map((password) => (
                 <TableRow key={password.id}>
                   <TableCell>
                     <DropdownMenu modal>
@@ -237,7 +242,11 @@ export function CallTable() {
                         type="text"
                         placeholder="Observação"
                         onChange={(e) =>
-                          onPasswordChange('observation', e.target.value, password.id)
+                          onPasswordChange(
+                            'observation',
+                            e.target.value,
+                            password.id,
+                          )
                         }
                         value={password.observation || ''}
                         onBlur={() =>
@@ -305,7 +314,7 @@ export function CallTable() {
                   </TableCell>
 
                   <TableCell>
-                      <TimerCount startDate={password.createdAt} /> 
+                    <TimerCount startDate={password.createdAt} />
                   </TableCell>
 
                   <TableCell>
@@ -324,8 +333,8 @@ export function CallTable() {
                       {password.started ? (
                         <div className="relative">
                           <div className="absolute bg-red-500/10 text-red-500 top-[-19px] right-0 text-right border border-red-300 rounded-lg text-[11px] px-2">
-                           <TimerCount startDate={password.startedAt} />
-                          </div> 
+                            <TimerCount startDate={password.startedAt} />
+                          </div>
                           <Button
                             className="h-6 bg-red-500/10 text-red-500 hover:bg-green-500/20"
                             variant="custom"
@@ -334,15 +343,14 @@ export function CallTable() {
                             <CheckCircle className="mr-2 !size-4" />
                             Encerrar
                           </Button>
-                      </div>
+                        </div>
                       ) : (
-                      <Button
-                        className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                        variant="custom"
-                        onClick={() =>
-                          startPassword(password.id, 'START')
-                        } >
-                        <CheckCircle className="mr-2 !size-4" />
+                        <Button
+                          className="h-6 bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                          variant="custom"
+                          onClick={() => startPassword(password.id, 'START')}
+                        >
+                          <CheckCircle className="mr-2 !size-4" />
                           Iniciar
                         </Button>
                       )}
