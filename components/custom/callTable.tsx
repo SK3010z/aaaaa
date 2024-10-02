@@ -7,7 +7,6 @@ import { useQueueStore } from '@/stores/queueStore'
 import { produce } from 'immer'
 import {
   CheckCircle,
-  ClipboardList,
   EllipsisVertical,
   Megaphone,
   Plus,
@@ -161,7 +160,6 @@ export function CallTable() {
   }, [
     selectedService,
     selectedPriority,
-    selectedOrder,
     selectedStatus,
     passwords,
     selectedLocal,
@@ -241,12 +239,12 @@ export function CallTable() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem className="gap-4">
+                        {/* <DropdownMenuItem className="gap-4">
                           <ClipboardList className="size-4" />
                           <span className="text-sm">
                             Histórico de atividades
                           </span>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem
                           className="gap-4"
                           onClick={() => setPasswordForConfirmId(password.id)}
