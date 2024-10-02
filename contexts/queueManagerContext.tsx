@@ -167,6 +167,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
 
   const onPasswordSummary = useCallback(
     (payload: { lastPassword: string; totalCalls: number }) => {
+      console.log('payload')
       setSummaryPasswordData(payload)
     },
     [setSummaryPasswordData],
@@ -182,6 +183,9 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.on('connect', () => {
       console.log('Socket connected')
       io.emit(socketEvents.reception.RECEPTION_CONNECTED, {
+        token: session?.user.token,
+      })
+      io.emit(socketEvents.reception.SUMMARY_PASSWORD_REQUEST, {
         token: session?.user.token,
       })
     })
