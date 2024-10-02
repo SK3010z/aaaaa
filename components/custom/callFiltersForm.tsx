@@ -127,6 +127,7 @@ export const CallFiltersForm: React.FC = () => {
   ]
 
   const status = [
+    { label: 'Aguardando', value: 'waiting' },
     { label: 'Encaminhado', value: 'forwarded' },
     { label: 'Encerrado', value: 'closed' },
     { label: 'Iniciou', value: 'started' },

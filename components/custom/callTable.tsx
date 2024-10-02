@@ -116,7 +116,7 @@ export function CallTable() {
               ? 'closed'
               : password.fowarded
                 ? 'forwarded'
-                : '',
+                : 'waiting',
         )
 
       const localMatch =
