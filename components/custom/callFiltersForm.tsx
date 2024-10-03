@@ -136,6 +136,7 @@ export const CallFiltersForm: React.FC = () => {
   const order = [
     { label: 'Tempo de espera', value: 'waitTime' },
     { label: 'Horário', value: 'hour' },
+    { label: 'Hora marcada', value: 'scheduledTime' },
   ]
 
   function clearFilters() {
