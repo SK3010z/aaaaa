@@ -7,7 +7,7 @@ export const panelRequestDataResolver = z.object({
   layout: z.string({
     message: 'Campo obrigatório',
   }),
-  passwordCallConfiguration: z.string({
+  callConfig: z.string({
     message: 'Campo obrigatório',
   }),
   description: z.string().min(1, { message: 'A descrição deve ser informada' }),
@@ -21,7 +21,7 @@ export const editPanelRequestDataResolver = z.object({
   layout: z.string({
     message: 'Campo obrigatório',
   }),
-  passwordCallConfiguration: z.string({
+  callConfig: z.string({
     message: 'Campo obrigatório',
   }),
   description: z.string().min(1, { message: 'A descrição deve ser informada' }),

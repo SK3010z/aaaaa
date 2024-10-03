@@ -20,4 +20,5 @@ export interface listOnePanelResponse {
   contract_id: string
   serviceClassifications: ServiceClassification[]
   servicePasswords: ServicePassword[]
+  callConfig?: string
 }

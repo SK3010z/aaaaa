@@ -108,9 +108,9 @@ export const EditPanelForm: React.FC<{
             Configuração de chamada
           </label>
           <Controller
-            name="passwordCallConfiguration"
+            name="callConfig"
             control={control}
-            defaultValue={data.panel?.passwordCallConfiguration}
+            defaultValue={data.panel?.callConfig}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">

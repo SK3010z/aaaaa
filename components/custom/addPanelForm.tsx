@@ -140,7 +140,7 @@ export const AddPanelForm: React.FC = () => {
                 Configuração de chamada
               </label>
               <Controller
-                name="passwordCallConfiguration"
+                name="callConfig"
                 control={control}
                 render={({ field }) => (
                   <>
@@ -157,7 +157,7 @@ export const AddPanelForm: React.FC = () => {
                       </SelectContent>
                     </Select>
                     <span className="text-red-500 text-sm">
-                      {errors?.passwordCallConfiguration?.message?.toString()}
+                      {errors?.callConfig?.message?.toString()}
                     </span>
                   </>
                 )}
