@@ -122,7 +122,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     io.emit(socketEvents.reception.CALL_PASSWORD, {
       token: session?.user.token,
       id: passwordId,
-      customText: (locationSelect?.passwordCallConfiguration === 'notCallName') ? '':password?.customTextCall || '',
+      customText: (locationSelect?.callConfig === 'notCallName') ? '':password?.customTextCall || '',
       location: {
         deskCaller: location?.deskCaller || selectedLocal?.value,
         location: location?.location || selectedPosition?.value,

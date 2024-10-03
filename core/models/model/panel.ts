@@ -6,6 +6,7 @@ export interface Panel {
   qrTitle: string
   qrUrl: string
   passwordCallConfiguration: string
+  callConfig?: string
   layout: string
   theme: string
   active: boolean
