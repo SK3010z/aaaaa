@@ -197,6 +197,23 @@ export function CallTable() {
 
       return 0
     })
+  } else if (selectedOrder === 'scheduledTime') {
+    filteredPasswords?.sort((a, b) => {
+      if (a.scheduledTime && b.scheduledTime) {
+        const [aHours, aMinutes] = a.scheduledTime.split(':').map(Number)
+        const [bHours, bMinutes] = b.scheduledTime.split(':').map(Number)
+
+        if (aHours !== bHours) {
+          return aHours - bHours
+        }
+        return aMinutes - bMinutes
+      }
+
+      if (a.scheduledTime) return -1
+      if (b.scheduledTime) return 1
+
+      return 0
+    })
   }
 
   function onPasswordChange(
@@ -379,7 +396,10 @@ export function CallTable() {
                   </TableCell>
 
                   <TableCell>
-                    <TimerCount startDate={password.createdAt} />
+                    <TimerCount
+                      startDate={password.createdAt}
+                      closedAt={password.closedAt}
+                    />
                   </TableCell>
 
                   <TableCell>

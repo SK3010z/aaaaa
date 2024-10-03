@@ -13,7 +13,6 @@ import {
   ServiceRequestData,
 } from '@/core/models/validationSchemas/serviceRequestData'
 import { paramsV2Api } from '@/lib/api'
-import { useQueryClient } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import {
   createContext,
@@ -143,9 +142,9 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
     { value: '5', label: '5' },
   ]
 
-  const passwordCallConfigurations = [ 
-    { value: 'name', label: 'Chamar Nome' }, 
-    { value: 'notCallName', label: 'Não chamar nome' }, 
+  const passwordCallConfigurations = [
+    { value: 'name', label: 'Chamar Nome' },
+    { value: 'notCallName', label: 'Não chamar nome' },
   ]
 
   const fetchPanels = useCallback(
@@ -202,7 +201,6 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       console.log(error)
     }
   }
-  const queryClient = useQueryClient()
 
   async function handleUpdateService(
     control: string,
@@ -217,7 +215,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -237,7 +235,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Classificações atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -266,7 +264,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
             headers: { Authorization: `Bearer ${session.data?.user.token}` },
           },
         )
-        fecthPanel(); 
+        fecthPanel()
         toast.success('Serviço desconectado ao painel com sucesso')
       }
     } catch (error) {
@@ -284,7 +282,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Classificação criada com sucesso')
     } catch (error) {
       console.log(error)
@@ -296,7 +294,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await api.delete(`service-classification/${id}`, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Classificação removida com sucesso')
     } catch (error) {
       console.log(error)
@@ -314,7 +312,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Serviço removido com sucesso')
     } catch (error) {
       console.log(error)
@@ -341,7 +339,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Serviço criado com sucesso')
     } catch (error) {
       console.log(error)
@@ -378,7 +376,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -390,7 +388,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await paramsV2Api.put(`panel/${id}`, data, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -402,7 +400,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await api.post(`panel`, data, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      fecthPanel(); 
+      fecthPanel()
       toast.success('Painel cadastrado com sucesso')
     } catch (error) {
       console.log(error)

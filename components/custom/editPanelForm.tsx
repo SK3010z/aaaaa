@@ -110,7 +110,7 @@ export const EditPanelForm: React.FC<{
           <Controller
             name="callConfig"
             control={control}
-            defaultValue={(data.panel?.callConfig)??'name'}
+            defaultValue={data.panel?.callConfig ?? 'name'}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger className="w-[180px]">

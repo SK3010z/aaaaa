@@ -14,4 +14,5 @@ export interface ReceptionQueuePassword {
   started?: boolean
   startedAt?: Date
   closed?: boolean
+  closedAt?: Date
 }
