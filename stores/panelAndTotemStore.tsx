@@ -143,8 +143,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
     { value: '5', label: '5' },
   ]
 
-  const passwordCallConfigurations = [
-    { value: 'all', label: 'Todos' }, 
+  const passwordCallConfigurations = [ 
     { value: 'name', label: 'Chamar Nome' }, 
     { value: 'notCallName', label: 'Não chamar nome' }, 
   ]
