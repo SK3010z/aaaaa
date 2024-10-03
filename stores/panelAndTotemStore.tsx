@@ -218,9 +218,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -240,9 +238,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Classificações atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -271,9 +267,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
             headers: { Authorization: `Bearer ${session.data?.user.token}` },
           },
         )
-        queryClient.invalidateQueries({
-          queryKey: ['@saudehd-totem-panel'],
-        })
+        fecthPanel(); 
         toast.success('Serviço desconectado ao painel com sucesso')
       }
     } catch (error) {
@@ -291,9 +285,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Classificação criada com sucesso')
     } catch (error) {
       console.log(error)
@@ -305,9 +297,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await api.delete(`service-classification/${id}`, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Classificação removida com sucesso')
     } catch (error) {
       console.log(error)
@@ -325,9 +315,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Serviço removido com sucesso')
     } catch (error) {
       console.log(error)
@@ -354,9 +342,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Serviço criado com sucesso')
     } catch (error) {
       console.log(error)
@@ -393,9 +379,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
           headers: { Authorization: `Bearer ${session.data?.user.token}` },
         },
       )
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -407,9 +391,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await paramsV2Api.put(`panel/${id}`, data, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Serviço atualizado com sucesso')
     } catch (error) {
       console.log(error)
@@ -421,9 +403,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
       await api.post(`panel`, data, {
         headers: { Authorization: `Bearer ${session.data?.user.token}` },
       })
-      queryClient.invalidateQueries({
-        queryKey: ['@saudehd-totem-panel'],
-      })
+      fecthPanel(); 
       toast.success('Painel cadastrado com sucesso')
     } catch (error) {
       console.log(error)
