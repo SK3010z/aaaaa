@@ -6,7 +6,7 @@ interface Options {
     handler(data: unknown): void
     watchListener?: boolean
   }>
-  emitOnConnect: { event: string; payload: unknown }
+  emitOnConnect: { event: string; payload: unknown }[]
 }
 
 export function useSocketIo({ listeners, emitOnConnect }: Options) {
@@ -19,9 +19,11 @@ export function useSocketIo({ listeners, emitOnConnect }: Options) {
   )
 
   useEffect(() => {
-    if (emitOnConnect) {
+    if (emitOnConnect && emitOnConnect.length > 0) {
       io.on('connect', () => {
-        io.emit(emitOnConnect.event, emitOnConnect.payload)
+        emitOnConnect.forEach((emit) => {
+          io.emit(emit.event, emit.payload)
+        })
       })
     }
     listeners.forEach((listener) => {

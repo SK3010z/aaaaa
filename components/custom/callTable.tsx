@@ -79,7 +79,7 @@ export function CallTable() {
   }
 
   const filteredPasswords = useMemo(() => {
-    if (!passwords) return null
+    if (!passwords) return []
 
     const filtered = !(
       selectedPriority.includes('superPriority') ||
@@ -243,7 +243,7 @@ export function CallTable() {
   return (
     <div className="px-8 pb-6 flex flex-col flex-1">
       <div className="bg-white border rounded flex-col flex-1">
-        <CallTableFilters />
+        <CallTableFilters filteredPasswords={filteredPasswords} />
 
         <div className="flex flex-col max-h-[calc(100dvh_-_26rem)] overflow-y-auto">
           <Table>
