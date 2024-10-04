@@ -1,6 +1,6 @@
 'use client'
 import { useQueueManager } from '@/contexts/queueManagerContext'
-import { useQueueStore } from '@/stores/queueStore'
+import { ReceptionQueuePassword } from '@/core/models/model/receptionQueuePassword'
 import { Megaphone, Search } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -8,9 +8,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { CallFiltersForm } from './callFiltersForm'
 import { NewPasswordDialog } from './newPasswordDialog'
 
-export function CallTableFilters() {
+type Props = {
+  filteredPasswords: ReceptionQueuePassword[]
+}
+
+export function CallTableFilters({ filteredPasswords: passwords }: Props) {
   const { callPassword, setSearchPassword } = useQueueManager()
-  const [passwords] = useQueueStore((state) => [state.passwords])
   function handleCallNextPassword() {
     const nextPassword = passwords[0]
     if (nextPassword) {

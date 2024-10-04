@@ -274,7 +274,6 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
 
   async function createClassification(data: ClassificationRequestData) {
     try {
-      console.log('teste', data)
       await api.post(
         `service-classification`,
         { description: data.name, active: data.active === 'true' },

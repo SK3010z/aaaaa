@@ -1,5 +1,6 @@
 'use client'
 import { socketEvents } from '@/core/constants/socketEvents'
+import { useSocketIo } from '@/core/hooks/useSocketIo'
 import { DismissPasswordDto } from '@/core/models/dto/dismissPasswordDto'
 import { ReceptionQueuePassword } from '@/core/models/model/receptionQueuePassword'
 import { usePanelStore } from '@/stores/panelStore'
@@ -11,7 +12,6 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -49,10 +49,14 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     totalCalls: 0,
   })
   const [searchPassword, setSearchPassword] = useState('')
-  const [passwords, setPasswords] = useQueueStore((state) => [
-    state.passwords,
-    state.actions.setPasswords,
-  ])
+  const [passwords, setPasswords, addPassword, removePassword, updatePass] =
+    useQueueStore((state) => [
+      state.passwords,
+      state.actions.setPasswords,
+      state.actions.addPassword,
+      state.actions.removePassword,
+      state.actions.updatePassword,
+    ])
   const [selectedPanel, selectedLocal, selectedPosition, storedPanels] =
     usePanelStore((state) => [
       state.selectedPanel,
@@ -145,12 +149,8 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   }
 
   function updatePassword(data: Partial<ReceptionQueuePassword>) {
-    const passIdx = passwords.findIndex((pwd) => pwd.id === data.id)
-    if (passIdx >= 0) {
-      const newPasswords = produce(passwords, (draft) => {
-        draft[passIdx] = { ...draft[passIdx], ...data }
-      })
-      setPasswords(newPasswords)
+    if (data.id) {
+      updatePass(data.id, data)
     }
     io.emit(socketEvents.reception.UPDATE_PASSWORD, {
       ...data,
@@ -160,29 +160,20 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
 
   const onPasswordDismissed = useCallback(
     ({ passwordId }: { passwordId: string }) => {
-      setPasswords(passwords.filter((password) => password.id !== passwordId))
+      removePassword(passwordId)
     },
     [passwords, setPasswords],
   )
 
   const onPasswordStarted = useCallback(
     (payload: ReceptionQueuePassword) => {
-      const passwordIndex = passwords.findIndex(
-        (pass) => pass.id === payload.id,
-      )
-      const updatedPasswords = [...passwords]
-      updatedPasswords[passwordIndex] = {
-        ...updatedPasswords[passwordIndex],
-        ...payload,
-      }
-      setPasswords(updatedPasswords)
+      updatePass(payload.id, payload)
     },
     [passwords, setPasswords],
   )
 
   const onPasswordSummary = useCallback(
     (payload: { lastPassword: string; totalCalls: number }) => {
-      console.log('payload')
       setSummaryPasswordData(payload)
     },
     [setSummaryPasswordData],
@@ -196,42 +187,57 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
 
   const onPasswordGenerated = useCallback(
     (data: ReceptionQueuePassword) => {
-      setPasswords([...passwords, data])
+      addPassword(data)
     },
     [passwords, setPasswords],
   )
 
-  useEffect(() => {
-    io.on('connect', () => {
-      console.log('Socket connected')
-      io.emit(socketEvents.reception.RECEPTION_CONNECTED, {
-        token: session?.user.token,
-      })
-      io.emit(socketEvents.reception.SUMMARY_PASSWORD_REQUEST, {
-        token: session?.user.token,
-      })
-    })
-    io.on(socketEvents.reception.PASSWORD_QUEUE_RECEPTION, onPasswrodsSended)
-    io.on(socketEvents.reception.PASSWORD_UPDATED, onPasswordUpdated)
-    io.on(socketEvents.reception.PASSWORD_DISMISSED, onPasswordDismissed)
-    io.on(socketEvents.reception.PASSWORD_CONFIRMED, onPasswordDismissed)
-    io.on(socketEvents.reception.PASSWORD_STARTED, onPasswordStarted)
-    io.on(socketEvents.reception.PASSWORD_SUMMARY, onPasswordSummary)
-    io.on(socketEvents.reception.PASSWORD_GENERATED, onPasswordGenerated)
-
-    return () => {
-      console.log('Socket update')
-    }
-  }, [
-    io,
-    onPasswordUpdated,
-    session,
-    onPasswrodsSended,
-    onPasswordDismissed,
-    onPasswordStarted,
-    onPasswordSummary,
-    onPasswordGenerated,
-  ])
+  useSocketIo({
+    emitOnConnect: [
+      {
+        event: socketEvents.reception.RECEPTION_CONNECTED,
+        payload: {
+          token: session?.user.token,
+        },
+      },
+      {
+        event: socketEvents.reception.SUMMARY_PASSWORD_REQUEST,
+        payload: {
+          token: session?.user.token,
+        },
+      },
+    ],
+    listeners: [
+      {
+        event: socketEvents.reception.PASSWORD_QUEUE_RECEPTION,
+        handler: onPasswrodsSended,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_UPDATED,
+        handler: onPasswordUpdated,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_DISMISSED,
+        handler: onPasswordDismissed,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_CONFIRMED,
+        handler: onPasswordDismissed,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_STARTED,
+        handler: onPasswordStarted,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_SUMMARY,
+        handler: onPasswordSummary,
+      },
+      {
+        event: socketEvents.reception.PASSWORD_GENERATED,
+        handler: onPasswordGenerated,
+      },
+    ],
+  })
 
   function dismissPassword(passwordId: string, reason: string) {
     const data: DismissPasswordDto = {
