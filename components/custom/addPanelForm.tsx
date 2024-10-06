@@ -22,12 +22,13 @@ import {
 import { IndividualColorPicker } from './individualColorPicker'
 
 export const AddPanelForm: React.FC = () => {
-  const { panelLayouts, passwordCallConfigurations, addPanel, serviceActive } =
+  const { panelLayouts, passwordCallConfigurations, addPanel, serviceActive, qacodeTotemConfigurations } =
     usePanelAndTotem()
   const {
     handleSubmit,
     register,
     control,
+    watch,
     formState: { errors },
   } = useForm<editPanelRequestData>({
     resolver: zodResolver(editPanelRequestDataResolver),
@@ -249,6 +250,46 @@ export const AddPanelForm: React.FC = () => {
               </div>
             </div>
           </div>
+          <div className="flex flex-col gap-4 p-6">
+            <h3>Configuração do Totem</h3>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <div className="items-center w-auto">
+                <label htmlFor="name" className="text-sm font-medium text-text">
+                  Modelo do QRCode Impresso
+                </label>
+                <Controller
+                  name="qrcodeTotemConfig"
+                  control={control}
+                  defaultValue="showQRCode"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {qacodeTotemConfigurations.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))} 
+                      </SelectContent>
+                  </Select>
+                  )}
+                /> 
+              </div> 
+              <div data-show={watch('qrcodeTotemConfig') === 'QRCodeLink'} className="items-center w-auto data-[show=false]:hidden">
+                <label htmlFor="name" className="text-sm font-medium text-text">
+                  Link do QRCode
+                </label>
+                <Input
+                  id="qrcodeLinkTotem"
+                  placeholder="Url" 
+                  error={errors?.qrcodeLinkTotem?.message}
+                  {...register('qrcodeLinkTotem')}
+                />
+              </div> 
+            </div> 
+          </div>
 
           <div className="flex flex-col gap-4 flex-wrap p-6">
             <label htmlFor="">Tema do Painel</label>
@@ -358,6 +399,10 @@ export const AddPanelForm: React.FC = () => {
               )}
             />
           </div>
+
+          
+            
+
           <div className="flex justify-start p-4">
             <div>
               <Button type="submit" className="size-sm">

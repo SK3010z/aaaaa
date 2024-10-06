@@ -15,6 +15,8 @@ export const panelRequestDataResolver = z.object({
   qrUrl: z.string().optional(),
   qrTitle: z.string().optional(),
   theme: z.string().min(1, { message: 'O Tema deve ser informado' }),
+  qrcodeTotemConfig: z.string().optional(),
+  qrcodeLinkTotem: z.string().optional(),
 })
 
 export const editPanelRequestDataResolver = z.object({
@@ -31,6 +33,8 @@ export const editPanelRequestDataResolver = z.object({
   theme: z.string().min(1, { message: 'O Tema deve ser informado' }),
   active: z.string().optional(),
   videoProvider: z.string().optional(),
+  qrcodeTotemConfig: z.string().optional(),
+  qrcodeLinkTotem: z.string().optional(),
 })
 
 export type editPanelRequestData = z.infer<typeof editPanelRequestDataResolver>

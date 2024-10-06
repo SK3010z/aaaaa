@@ -78,6 +78,10 @@ interface PanelAndTotemStoreData {
     value: string
     label: string
   }[]
+  qacodeTotemConfigurations: {
+    value: string
+    label: string
+  }[]
 }
 
 const PanelAndTotemStore = createContext({} as PanelAndTotemStoreData)
@@ -145,6 +149,12 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
   const passwordCallConfigurations = [
     { value: 'name', label: 'Chamar Nome' },
     { value: 'notCallName', label: 'Não chamar nome' },
+  ]
+
+  const qacodeTotemConfigurations = [
+    { value: 'showQRCode', label: 'Mostrar QRCode com a senha' },
+    { value: 'notQRCode', label: 'Não mostrar QRCode' },
+    { value: 'QRCodeLink', label: 'Link personalizado no QRCode' },
   ]
 
   const fetchPanels = useCallback(
@@ -441,6 +451,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
         passwordCallConfigurations,
         updatePanel,
         addPanel,
+        qacodeTotemConfigurations
       }}
     >
       {children}
