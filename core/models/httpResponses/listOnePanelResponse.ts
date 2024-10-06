@@ -21,4 +21,6 @@ export interface listOnePanelResponse {
   serviceClassifications: ServiceClassification[]
   servicePasswords: ServicePassword[]
   callConfig?: string
+  qrcodeTotemConfig?: string
+  qrcodeLinkTotem?: string
 }
