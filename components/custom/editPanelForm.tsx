@@ -24,8 +24,13 @@ import { IndividualColorPicker } from './individualColorPicker'
 export const EditPanelForm: React.FC<{
   panel?: listOnePanelResponse | null
 }> = (data) => {
-  const { panelLayouts, passwordCallConfigurations, panelId, updatePanel, qacodeTotemConfigurations } =
-    usePanelAndTotem()
+  const {
+    panelLayouts,
+    passwordCallConfigurations,
+    panelId,
+    updatePanel,
+    qacodeTotemConfigurations,
+  } = usePanelAndTotem()
   const {
     handleSubmit,
     register,
@@ -197,12 +202,14 @@ export const EditPanelForm: React.FC<{
         </div>
       </div>
 
-
       <div className="flex flex-col gap-4 p-6">
         <h3>Configuração do Totem</h3>
         <div className="flex flex-wrap gap-4 mb-4">
           <div className="items-center w-auto">
-            <label htmlFor="qrcodeTotemConfig" className="text-sm font-medium text-text">
+            <label
+              htmlFor="qrcodeTotemConfig"
+              className="text-sm font-medium text-text"
+            >
               Modelo do QRCode Impresso
             </label>
             <Controller
@@ -219,13 +226,19 @@ export const EditPanelForm: React.FC<{
                       <SelectItem key={item.value} value={item.value}>
                         {item.label}
                       </SelectItem>
-                    ))} 
+                    ))}
                   </SelectContent>
-              </Select>
+                </Select>
               )}
-            /> 
-          </div> 
-          <div data-show={(watch('qrcodeTotemConfig') || data.panel?.qrcodeTotemConfig )=== 'QRCodeLink'} className="items-center w-auto data-[show=false]:hidden">
+            />
+          </div>
+          <div
+            data-show={
+              (watch('qrcodeTotemConfig') || data.panel?.qrcodeTotemConfig) ===
+              'QRCodeLink'
+            }
+            className="items-center w-auto data-[show=false]:hidden"
+          >
             <label htmlFor="name" className="text-sm font-medium text-text">
               Link do QRCode
             </label>
@@ -236,8 +249,8 @@ export const EditPanelForm: React.FC<{
               error={errors?.qrcodeLinkTotem?.message}
               {...register('qrcodeLinkTotem')}
             />
-          </div> 
-        </div> 
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col gap-4 flex-wrap p-6">

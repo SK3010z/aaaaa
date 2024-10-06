@@ -451,7 +451,7 @@ export const PanelAndTotemProvider: React.FC<PropsWithChildren> = ({
         passwordCallConfigurations,
         updatePanel,
         addPanel,
-        qacodeTotemConfigurations
+        qacodeTotemConfigurations,
       }}
     >
       {children}
