@@ -22,8 +22,13 @@ import {
 import { IndividualColorPicker } from './individualColorPicker'
 
 export const AddPanelForm: React.FC = () => {
-  const { panelLayouts, passwordCallConfigurations, addPanel, serviceActive, qacodeTotemConfigurations } =
-    usePanelAndTotem()
+  const {
+    panelLayouts,
+    passwordCallConfigurations,
+    addPanel,
+    serviceActive,
+    qacodeTotemConfigurations,
+  } = usePanelAndTotem()
   const {
     handleSubmit,
     register,
@@ -271,24 +276,27 @@ export const AddPanelForm: React.FC = () => {
                           <SelectItem key={item.value} value={item.value}>
                             {item.label}
                           </SelectItem>
-                        ))} 
+                        ))}
                       </SelectContent>
-                  </Select>
+                    </Select>
                   )}
-                /> 
-              </div> 
-              <div data-show={watch('qrcodeTotemConfig') === 'QRCodeLink'} className="items-center w-auto data-[show=false]:hidden">
+                />
+              </div>
+              <div
+                data-show={watch('qrcodeTotemConfig') === 'QRCodeLink'}
+                className="items-center w-auto data-[show=false]:hidden"
+              >
                 <label htmlFor="name" className="text-sm font-medium text-text">
                   Link do QRCode
                 </label>
                 <Input
                   id="qrcodeLinkTotem"
-                  placeholder="Url" 
+                  placeholder="Url"
                   error={errors?.qrcodeLinkTotem?.message}
                   {...register('qrcodeLinkTotem')}
                 />
-              </div> 
-            </div> 
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col gap-4 flex-wrap p-6">
@@ -399,9 +407,6 @@ export const AddPanelForm: React.FC = () => {
               )}
             />
           </div>
-
-          
-            
 
           <div className="flex justify-start p-4">
             <div>
