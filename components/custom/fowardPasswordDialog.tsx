@@ -117,7 +117,7 @@ export function FowardPasswordDialog({ passwordId }: Props) {
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
-          <Button onClick={handleFoward} disabled={!position || !local}>
+          <Button onClick={handleFoward} disabled={!local}>
             Confirmar
           </Button>
         </DialogFooter>

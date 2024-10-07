@@ -132,7 +132,7 @@ export function CallFowardedPasswordDialog({
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>
           </DialogClose>
-          <Button onClick={handleCall} disabled={!position || !local}>
+          <Button onClick={handleCall} disabled={!local}>
             Chamar
           </Button>
         </DialogFooter>

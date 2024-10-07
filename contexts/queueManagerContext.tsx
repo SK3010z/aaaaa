@@ -162,14 +162,14 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     ({ passwordId }: { passwordId: string }) => {
       removePassword(passwordId)
     },
-    [passwords, setPasswords],
+    [removePassword],
   )
 
   const onPasswordStarted = useCallback(
     (payload: ReceptionQueuePassword) => {
       updatePass(payload.id, payload)
     },
-    [passwords, setPasswords],
+    [updatePass],
   )
 
   const onPasswordSummary = useCallback(
@@ -189,7 +189,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     (data: ReceptionQueuePassword) => {
       addPassword(data)
     },
-    [passwords, setPasswords],
+    [addPassword],
   )
 
   useSocketIo({
