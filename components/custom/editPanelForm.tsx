@@ -183,7 +183,7 @@ export const EditPanelForm: React.FC<{
             </label>
             <Input
               id="qrTitle"
-              placeholder="URL do video"
+              placeholder="Título do QRCode"
               defaultValue={data.panel?.qrTitle}
               {...register('qrTitle')}
             />
@@ -194,7 +194,7 @@ export const EditPanelForm: React.FC<{
             </label>
             <Input
               id="qrUrl"
-              placeholder="URL do video"
+              placeholder="Link do QRCode"
               defaultValue={data.panel?.qrUrl}
               {...register('qrUrl')}
             />
