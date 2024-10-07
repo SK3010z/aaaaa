@@ -1,4 +1,5 @@
 'use client'
+import { useQueueManager } from '@/contexts/queueManagerContext'
 import { useApi } from '@/core/hooks/useApi'
 import { ListPanelResponse } from '@/core/models/httpResponses/listPanelResponse'
 import { getFirstAndSecondName } from '@/core/utils/getFirstAndSecondName'
@@ -19,6 +20,7 @@ export function SelectLocation() {
   const [popoverOpen, setPopoverOpen] = useState(false)
   const session = useSession()
   const { api } = useApi()
+  const { updateUser } = useQueueManager()
   const [
     storedPanels,
     selectedPanel,
@@ -115,7 +117,10 @@ export function SelectLocation() {
             <CreatableSelect
               label="Local"
               value={selectedLocal}
-              onChange={setSelectedLocal}
+              onChange={(option) => {
+                updateUser({ deskCaller: option?.value })
+                setSelectedLocal(option)
+              }}
               tabIndex={-1}
               options={locals}
               onCreateOption={(option) =>
@@ -127,7 +132,10 @@ export function SelectLocation() {
             <CreatableSelect
               label="Posição"
               value={selectedPosition}
-              onChange={setSelectedPosition}
+              onChange={(option) => {
+                updateUser({ location: option?.value })
+                setSelectedPosition(option)
+              }}
               tabIndex={-1}
               createOptionPosition="first"
               options={positions}

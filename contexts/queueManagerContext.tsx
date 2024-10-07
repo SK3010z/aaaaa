@@ -12,11 +12,10 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
-  useMemo,
+  useEffect,
   useState,
 } from 'react'
 import { toast } from 'react-toastify'
-import { io as socket } from 'socket.io-client'
 
 export type QueueManagerContextData = {
   callPassword: (
@@ -25,6 +24,7 @@ export type QueueManagerContextData = {
     location?: { deskCaller: string; location: string },
   ) => void
   requestPasswordQueue: () => void
+  updateUser: (options: { deskCaller?: string; location?: string }) => void
   startPassword: (passwordId: string, type: string) => void
   updatePassword: (data: Partial<ReceptionQueuePassword>) => void
   dismissPassword: (passwordId: string, reason: string) => void
@@ -44,6 +44,7 @@ const QueueManagerContext = createContext({} as QueueManagerContextData)
 
 export function QueueManagerProvider({ children }: PropsWithChildren) {
   const [callPasswordId, setCallPasswordId] = useState('')
+  const [, setPermissionGranted] = useState('')
   const [summaryPasswordData, setSummaryPasswordData] = useState({
     lastPassword: '',
     totalCalls: 0,
@@ -86,14 +87,6 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
       }
     },
     [passwords, setPasswords],
-  )
-
-  const io = useMemo(
-    () =>
-      socket(process.env.NEXT_PUBLIC_WEBSOCKET_URL, {
-        path: '/panel/v1/ws/',
-      }),
-    [],
   )
 
   function callPassword(
@@ -192,12 +185,14 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     [addPassword],
   )
 
-  useSocketIo({
+  const { io } = useSocketIo({
     emitOnConnect: [
       {
         event: socketEvents.reception.RECEPTION_CONNECTED,
         payload: {
           token: session?.user.token,
+          deskCaller: selectedLocal?.value,
+          location: selectedPosition?.value,
         },
       },
       {
@@ -239,6 +234,37 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
     ],
   })
 
+  const onConnectionSuccess = useCallback(() => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(async (serviceWorker) => {
+        window.Notification.requestPermission(async (status) => {
+          setPermissionGranted(status)
+          if (status === 'granted') {
+            let subscription = await serviceWorker.pushManager.getSubscription()
+            if (!subscription) {
+              subscription = await serviceWorker.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey:
+                  process.env.NEXT_PUBLIC_NOTIFICATIONS_PUBLIC_KEY,
+              })
+            }
+            if (subscription) {
+              io.emit(
+                socketEvents.reception.REGISTER_NOTIFICATION_INSTANCE,
+                subscription,
+              )
+            }
+          }
+        })
+      })
+      .catch((err) => console.log(err))
+  }, [io])
+
+  useEffect(() => {
+    io.on(socketEvents.reception.CONNECTION_SUCCESSFULL, onConnectionSuccess)
+  }, [io, onConnectionSuccess])
+
   function dismissPassword(passwordId: string, reason: string) {
     const data: DismissPasswordDto = {
       passwordId,
@@ -261,6 +287,15 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
   function requestPasswordQueue() {
     io.emit(socketEvents.reception.RECEPTION_CONNECTED, {
       token: session?.user.token,
+      deskCaller: selectedLocal?.value,
+      location: selectedPosition?.value,
+    })
+  }
+
+  function updateUser(options: { deskCaller?: string; location?: string }) {
+    io.emit(socketEvents.reception.USER_CHANGE, {
+      ...options,
+      token: session?.user.token,
     })
   }
 
@@ -279,6 +314,7 @@ export function QueueManagerProvider({ children }: PropsWithChildren) {
         setSearchPassword,
         searchPassword,
         requestPasswordQueue,
+        updateUser,
       }}
     >
       {children}
