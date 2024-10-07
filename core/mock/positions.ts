@@ -4,6 +4,8 @@ export const MOCK_LOCALS = [
   'Recepção',
   'Consultório',
   'Ambulatório',
+  'Oftalmologia',
+  'Pediatria'
 ]
 export const MOCK_POSITIONS = Array(30)
   .fill(null)
