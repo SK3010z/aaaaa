@@ -234,7 +234,7 @@ export const AddPanelForm: React.FC = () => {
                 </label>
                 <Input
                   id="qrTitle"
-                  placeholder="URL do video"
+                  placeholder="Título do QRCode"
                   error={errors?.qrTitle?.message?.toString()}
                   {...register('qrTitle')}
                 />
